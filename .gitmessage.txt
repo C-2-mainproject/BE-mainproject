@@ -1,0 +1,26 @@
+# C-2 Commit Rule
+# 제목은 대문자로 시작합니다.
+# 본문과 푸터는 선택 사항 입니다.
+#######제목#######
+
+#######본문#######
+
+#######푸터#######
+
+##################
+# Feat: 기능 추가
+# Fix: 오류 수정
+# Docs: 문서 관련 수정
+# Refactor: 리팩터링
+# Test: 테스트 코드 작성
+# Chore: Build와 관련된 부분(Prod 제외)
+# Prod: Production Code 수정
+# Remove: 기능 삭제
+# Style: 주석 작성
+# 제목 : 50자 이하, 대문자로 시작
+# 본문 : 제목으로 충분한 설명이 되지 않는다면 본문에 추가 작성
+# 푸터 : Issue Tracking 시 작성합니다.
+# Regulation of C-2 commit convention
+# wrote from dong
+# Ref: Udacity git commit convention
+##################
