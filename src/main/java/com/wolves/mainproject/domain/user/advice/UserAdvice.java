@@ -3,6 +3,7 @@ package com.wolves.mainproject.domain.user.advice;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -38,6 +39,7 @@ public class UserAdvice extends Timestamped {
     @Column(nullable = false, name = "personal_consent")
     private boolean personalConsent;
 
+    @Builder.Default
     @Column(nullable = false, columnDefinition="boolean default false", name = "is_clear")
     private boolean isClear = false; // for hibernate
 

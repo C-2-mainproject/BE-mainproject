@@ -1,19 +1,27 @@
 package com.wolves.mainproject.domain.user;
 
 import com.wolves.mainproject.domain.common.Timestamped;
+import com.wolves.mainproject.role.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import reactor.util.annotation.Nullable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
+@ToString
+@DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @Getter
 @Entity
-public class User extends Timestamped {
+public class User extends Timestamped implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -36,9 +44,10 @@ public class User extends Timestamped {
     @Column(nullable = false, length = 2)
     private String gender;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String provider;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String role;
+    private RoleType role;
 }
