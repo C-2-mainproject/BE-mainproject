@@ -2,16 +2,25 @@ package com.wolves.mainproject.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
-@RestController
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // 기본 Exception 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> proceedAllException(Exception e){
-        return new ResponseEntity<>(String.format("<h1>%s</h1>", e.getMessage()), HttpStatus.EXPECTATION_FAILED);
+    public ResponseEntity<Object> handleApiRequestException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
     }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Object> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse errorResponse = new ErrorResponse(errorCode);
+        return new ResponseEntity<>(errorResponse, errorCode.getStatus());
+
+    }
+
 }
