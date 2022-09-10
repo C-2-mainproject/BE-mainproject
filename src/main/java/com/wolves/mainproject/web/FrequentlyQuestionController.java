@@ -2,6 +2,7 @@ package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.FrequentlyQuestionDto;
+import com.wolves.mainproject.handler.aop.annotation.AdminValidation;
 import com.wolves.mainproject.service.FrequentlyQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ public class FrequentlyQuestionController {
     private final FrequentlyQuestionService frequentlyQuestionService;
 
 
+    @AdminValidation
     @PostMapping("/api/support/frequently")
     public ResponseEntity<?> createFrequently(@RequestBody FrequentlyQuestionDto requestDto,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -26,6 +28,7 @@ public class FrequentlyQuestionController {
         return frequentlyQuestionService.getAllFrequently();
     }
 
+    @AdminValidation
     @PutMapping("/api/support/frequently/id/{frequentlyId}")
     public ResponseEntity<?> updateFrequently(@PathVariable Long frequentlyId,
                                               @RequestBody FrequentlyQuestionDto requestDto,
@@ -33,6 +36,7 @@ public class FrequentlyQuestionController {
         return frequentlyQuestionService.updateFrequently(frequentlyId, requestDto, principalDetails);
     }
 
+    @AdminValidation
     @DeleteMapping("/api/support/frequently/id/{frequentlyId}")
     public ResponseEntity<?> deleteFrequently(@PathVariable Long frequentlyId){
         return frequentlyQuestionService.deleteFrequently(frequentlyId);
