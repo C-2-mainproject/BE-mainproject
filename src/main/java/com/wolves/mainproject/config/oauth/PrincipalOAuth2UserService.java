@@ -6,7 +6,7 @@ import com.wolves.mainproject.config.oauth.provider.NaverUserInfo;
 import com.wolves.mainproject.config.oauth.provider.OAuth2BaseUserInfo;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.type.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

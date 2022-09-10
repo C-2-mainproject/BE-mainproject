@@ -1,7 +1,7 @@
 package com.wolves.mainproject.dto.request;
 
 import com.wolves.mainproject.domain.user.User;
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.type.RoleType;
 import lombok.*;
 
 @Getter
