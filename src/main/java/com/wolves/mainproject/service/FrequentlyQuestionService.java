@@ -99,7 +99,7 @@ public class FrequentlyQuestionService {
     }
 
 
-    // 유저 찾기 / 로그인 검증도 함께 들어가야함
+    // 유저 찾기
     @Transactional(readOnly = true)
     public User checkUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
