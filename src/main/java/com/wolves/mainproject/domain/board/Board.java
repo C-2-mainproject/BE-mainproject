@@ -1,5 +1,6 @@
 package com.wolves.mainproject.domain.board;
 
+import com.wolves.mainproject.controller.dto.BoardRequestDto;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -33,8 +34,12 @@ public class Board extends Timestamped {
     @Column(nullable = false, name = "comment_count")
     private long commentCount;
 
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne
-    private User user;
+//    @JoinColumn(name = "user_id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @ManyToOne
+//    private User user;
+
+    public void update(BoardRequestDto boardRequestDto){
+        this.title = boardRequestDto.getTitle();
+    }
 }
