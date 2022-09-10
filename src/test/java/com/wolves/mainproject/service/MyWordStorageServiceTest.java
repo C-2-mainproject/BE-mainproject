@@ -1,5 +1,9 @@
 package com.wolves.mainproject.service;
 
+import com.wolves.mainproject.domain.meaning.Meaning;
+import com.wolves.mainproject.domain.meaning.MeaningRepository;
+import com.wolves.mainproject.domain.prononciation.Prononciation;
+import com.wolves.mainproject.domain.prononciation.PrononciationRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.domain.word.Word;
@@ -15,6 +19,7 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.request.UpdateWordDto;
 import com.wolves.mainproject.type.StatusType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +47,12 @@ public class MyWordStorageServiceTest {
 
     @Autowired
     private WordRepository wordRepository;
+
+    @Autowired
+    private MeaningRepository meaningRepository;
+
+    @Autowired
+    private PrononciationRepository prononciationRepository;
 
     @BeforeEach
     void makeWordStorage(){
@@ -204,6 +215,55 @@ public class MyWordStorageServiceTest {
         List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user);
         // Then
         assertEquals(1, wordStorages.size());
+    }
+
+    /**
+     * @Description : 특정 단어장 단어 편집
+     * @return : 단어 편집 여부
+     * @Author : Jangdongha
+     **/
+    @Test
+    void updateWordTest(){
+        // Given
+        long requestId = 1L;
+        UpdateWordDto dto = getUpdateWordDto();
+        WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
+        List<Word> words = dto.toWords(wordStorage);
+
+        // When
+        List<Word> wordsPS = wordRepository.saveAll(words);
+        List<Meaning> meaningsPS = meaningRepository.saveAll(dto.toMeanings(words));
+        List<Prononciation> pronunciationsPS = prononciationRepository.saveAll(dto.toPronunciations(words));
+        // Then
+        assertEquals("a", wordsPS.get(0).getWord());
+        assertEquals("test", wordsPS.get(0).getDescription());
+        assertEquals("a뜻1", meaningsPS.get(0).getMeaning());
+        assertEquals("a뜻2", meaningsPS.get(1).getMeaning());
+        assertEquals("명사", pronunciationsPS.get(0).getPrononciation());
+        assertEquals("동사", pronunciationsPS.get(1).getPrononciation());
+    }
+
+    private UpdateWordDto getUpdateWordDto(){
+        List<String> words = new ArrayList<>();
+        List<List<String>> meanings = new ArrayList<>();
+        List<String> meaning = new ArrayList<>();
+        List<List<String>> pronunciations = new ArrayList<>();
+        List<String> pronunciation = new ArrayList<>();
+        List<String> descriptions = new ArrayList<>();
+
+        words.add("a");
+        meaning.add("a뜻1"); meaning.add("a뜻2");
+        meanings.add(meaning);
+        pronunciation.add("명사"); pronunciation.add("동사");
+        pronunciations.add(pronunciation);
+        descriptions.add("test");
+
+        return UpdateWordDto.builder()
+                .words(words)
+                .meanings(meanings)
+                .pronunciations(pronunciations)
+                .descriptions(descriptions)
+                .build();
     }
 
 

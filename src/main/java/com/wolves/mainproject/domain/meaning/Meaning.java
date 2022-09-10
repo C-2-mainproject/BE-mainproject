@@ -2,6 +2,7 @@ package com.wolves.mainproject.domain.meaning;
 
 import com.wolves.mainproject.domain.word.Word;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Entity
 public class Meaning {
