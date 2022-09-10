@@ -10,6 +10,7 @@ import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeMapping;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
@@ -41,8 +42,6 @@ public class MyWordStorageServiceTest {
 
     @Autowired
     private WordRepository wordRepository;
-
-
 
     @BeforeEach
     void makeWordStorage(){
@@ -169,4 +168,23 @@ public class MyWordStorageServiceTest {
         assertEquals(1, wordStorages.size());
         assertEquals(wordStorage.getId(), wordStorages.get(0).getId());
     }
+
+    @Test
+    void findLikeWordStorageListTest(){
+        // Given
+        User user = userRepository.findById(1L).orElseThrow();
+        long requestId = 1L;
+        WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
+        WordStorageLike wordStorageLike = WordStorageLike.builder().user(user).wordStorage(wordStorage).build();
+        wordStorageLikeRepository.save(wordStorageLike);
+        // When
+        List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user).orElse(null);
+        List<WordStorage> wordStorages = new ArrayList<>();
+        assert wordStorageLikeMappings != null;
+        wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
+        // Then
+        assertEquals(1, wordStorages.size());
+    }
+
+
 }
