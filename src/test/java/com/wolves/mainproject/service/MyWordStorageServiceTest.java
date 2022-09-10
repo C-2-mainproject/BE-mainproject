@@ -7,6 +7,7 @@ import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.type.StatusType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,5 +94,23 @@ public class MyWordStorageServiceTest {
         WordStorage wordStoragePS = wordStorageRepository.findById(requestId).orElse(null);
         // Then
         assertNotNull(wordStoragePS);
+    }
+
+    /**
+     * @Description : 특정 단어장 public / private 변경
+     * @return : 변경 여부
+     * @Author : Jangdongha
+     **/
+    @Test
+    void updateWordStorageStatusTest(){
+        // Given
+        UpdateMyWordStorageStatusDto dto = new UpdateMyWordStorageStatusDto(true);
+        long requestId = 1L;
+        WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
+        // When
+        wordStorage.update(dto);
+        WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
+        // Then
+        assertEquals(StatusType.PUBLIC, wordStoragePS.getStatus());
     }
 }

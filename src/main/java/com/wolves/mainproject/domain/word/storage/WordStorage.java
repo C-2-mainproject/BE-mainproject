@@ -4,6 +4,7 @@ import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,5 +56,9 @@ public class WordStorage extends Timestamped {
         this.description = dto.getDescription();
         this.status = StatusType.findByBoolean(dto.isStatus());
         this.wordStorageCategory = category;
+    }
+
+    public void update(UpdateMyWordStorageStatusDto dto){
+        this.status = StatusType.findByBoolean(dto.isStatus());
     }
 }
