@@ -2,6 +2,9 @@ package com.wolves.mainproject.service;
 
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
+import com.wolves.mainproject.domain.word.Word;
+import com.wolves.mainproject.domain.word.WordMapping;
+import com.wolves.mainproject.domain.word.WordRepository;
 import com.wolves.mainproject.domain.word.storage.WordStorage;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
@@ -15,6 +18,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,6 +37,9 @@ public class MyWordStorageServiceTest {
 
     @Autowired
     private WordStorageLikeRepository wordStorageLikeRepository;
+
+    @Autowired
+    private WordRepository wordRepository;
 
     @BeforeEach
     void makeWordStorage(){
@@ -142,5 +151,26 @@ public class MyWordStorageServiceTest {
         }
         // Then
         assertNotNull(wordStorageLikePS);
+    }
+
+    /**
+     * @Description : 내 단어장 내 단어 검색
+     * @return : 검색한 단어를 가지고 있는 단어장 List
+     * @Author : Jangdongha
+     **/
+    @Test
+    void findWordInMyWordStorageTest(){
+        // Given
+        WordStorage wordStorage = wordStorageRepository.findById(1L).orElseThrow();
+        Word word = Word.builder().word("test").description("testDescription").wordStorage(wordStorage).build();
+        wordRepository.save(word);
+        // When
+        List<WordMapping> wordMappings = wordRepository.findAllByWord(word.getWord()).orElse(null);
+        List<WordStorage> wordStorages = new ArrayList<>();
+        assert wordMappings != null;
+        wordMappings.forEach(wordMapping -> wordStorages.add(wordMapping.getWordStorage()));
+        // Then
+        assertEquals(1, wordStorages.size());
+        assertEquals(wordStorage.getId(), wordStorages.get(0).getId());
     }
 }

@@ -2,6 +2,7 @@ package com.wolves.mainproject.domain.word;
 
 import com.wolves.mainproject.domain.word.storage.WordStorage;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
