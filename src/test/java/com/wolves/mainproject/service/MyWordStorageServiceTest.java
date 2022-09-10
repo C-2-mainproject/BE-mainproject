@@ -11,6 +11,7 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
+import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.type.StatusType;
@@ -40,6 +41,8 @@ public class MyWordStorageServiceTest {
 
     @Autowired
     private WordRepository wordRepository;
+
+
 
     @BeforeEach
     void makeWordStorage(){
@@ -134,23 +137,16 @@ public class MyWordStorageServiceTest {
      * @Author : Jangdongha
      **/
     @Test
-    void postLikeWordStorageTest(){
+    void postBookmarkedWordStorageTest(){
         // Given
         long requestId = 1L;
-        User user = userRepository.findById(1L).orElseThrow();
+        PostBookmarkedWordStorageDto dto = new PostBookmarkedWordStorageDto(true);
         WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
-        boolean isWordStorageLike = wordStorageLikeRepository.existsByUserAndWordStorage(user, wordStorage);
-        WordStorageLike wordStorageLikePS = null;
         // When
-        if (!isWordStorageLike){
-            WordStorageLike wordStorageLike = WordStorageLike.builder().user(user).wordStorage(wordStorage).build();
-            wordStorageLikePS = wordStorageLikeRepository.save(wordStorageLike);
-        }
-        if (isWordStorageLike){
-            wordStorageLikeRepository.deleteByUserAndWordStorage(user, wordStorage);
-        }
+        wordStorage.update(dto);
+        WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
         // Then
-        assertNotNull(wordStorageLikePS);
+        assertTrue(wordStoragePS.isBookmarked());
     }
 
     /**

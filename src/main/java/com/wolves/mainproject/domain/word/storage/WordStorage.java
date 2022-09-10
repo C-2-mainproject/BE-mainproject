@@ -3,6 +3,7 @@ package com.wolves.mainproject.domain.word.storage;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
+import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.type.StatusType;
@@ -10,12 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,6 +46,9 @@ public class WordStorage extends Timestamped {
     @Column(nullable = false, columnDefinition="bigint default 0", name = "like_count")
     private long likeCount;
 
+    @Column(nullable = false, columnDefinition = "boolean default false", name = "is_bookmarked")
+    private boolean isBookmarked;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusType status;
@@ -61,4 +63,5 @@ public class WordStorage extends Timestamped {
     public void update(UpdateMyWordStorageStatusDto dto){
         this.status = StatusType.findByBoolean(dto.isStatus());
     }
+    public void update(PostBookmarkedWordStorageDto dto) { this.isBookmarked = dto.isStatus(); }
 }

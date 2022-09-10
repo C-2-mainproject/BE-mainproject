@@ -7,6 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class PostLikeWordStorageDto {
+public class PostBookmarkedWordStorageDto {
     private boolean status;
 }
