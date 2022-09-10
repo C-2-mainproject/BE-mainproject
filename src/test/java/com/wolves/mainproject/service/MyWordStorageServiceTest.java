@@ -169,6 +169,11 @@ public class MyWordStorageServiceTest {
         assertEquals(wordStorage.getId(), wordStorages.get(0).getId());
     }
 
+    /**
+     * @Description : 좋아요 한 단어장 목록 불러오기
+     * @return : 좋아요 한 단어장 목록 List
+     * @Author : Jangdongha
+     **/
     @Test
     void findLikeWordStorageListTest(){
         // Given
@@ -182,6 +187,21 @@ public class MyWordStorageServiceTest {
         List<WordStorage> wordStorages = new ArrayList<>();
         assert wordStorageLikeMappings != null;
         wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
+        // Then
+        assertEquals(1, wordStorages.size());
+    }
+
+    /**
+     * @Description : 내 단어장 목록 불러오기
+     * @return : 내 단어장 List
+     * @Author : Jangdongha
+     **/
+    @Test
+    void findMyWordStoragesTest(){
+        // Given
+        User user = userRepository.findById(1L).orElseThrow();
+        // When
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user);
         // Then
         assertEquals(1, wordStorages.size());
     }
