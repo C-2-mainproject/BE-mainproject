@@ -1,5 +1,6 @@
 package com.wolves.mainproject.config.security;
 
+import com.wolves.mainproject.config.oauth.PrincipalOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
     private final CorsConfig config;
+    private final PrincipalOAuth2UserService principalOAuth2UserService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -32,6 +34,12 @@ public class SecurityConfig {
                 .and()
                 .formLogin().disable()
                 .apply(new MyCustomDsl())
+                .and()
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(principalOAuth2UserService)
+                .and()
+                .defaultSuccessUrl("/")
                 .and()
                 .build();
     }
