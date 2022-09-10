@@ -8,6 +8,8 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
+import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
+import com.wolves.mainproject.exception.wordStorage.WordStorageUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,15 @@ public class MyWordStorageService {
     public void insertWordStorage(User user, RequestMyWordStorageDto dto){
         WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         wordStorageRepository.save(dto.toWordStorage(category, user));
+    }
+
+    @Transactional
+    public void updateWordStorage(User user, RequestMyWordStorageDto dto, long wordStorageId){
+        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+        if (!user.equals(wordStorage.getUser()))
+            throw new WordStorageUnauthorizedException();
+        WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
+        wordStorage.update(dto, category);
     }
 
 }

@@ -3,6 +3,7 @@ package com.wolves.mainproject.domain.word.storage;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
+import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,5 +50,10 @@ public class WordStorage extends Timestamped {
     @Column(nullable = false)
     private StatusType status;
 
-
+    public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
+        this.title = dto.getTitle();
+        this.description = dto.getDescription();
+        this.status = StatusType.findByBoolean(dto.isStatus());
+        this.wordStorageCategory = category;
+    }
 }

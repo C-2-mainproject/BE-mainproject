@@ -67,6 +67,7 @@ public enum ErrorCode {
     WORD_STORAGE_TITLE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W102", "단어장 제목이 너무 깁니다."),
     WORD_STORAGE_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W103", "단어장 설명이 너무 깁니다."),
     WORD_STORAGE_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "W104", "존재하지 않는 단어장 타입입니다."),
+    WORD_STORAGE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "W105", "해당 단어장에 대한 권한이 없습니다."),
 
     // Category
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "C101", "존재하지 않는 카테고리명입니다."),
