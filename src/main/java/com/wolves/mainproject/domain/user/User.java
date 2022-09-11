@@ -1,15 +1,14 @@
 package com.wolves.mainproject.domain.user;
 
 import com.wolves.mainproject.domain.common.Timestamped;
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.dto.request.UserDto;
+import com.wolves.mainproject.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import reactor.util.annotation.Nullable;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -50,4 +49,5 @@ public class User extends Timestamped implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private RoleType role;
+
 }

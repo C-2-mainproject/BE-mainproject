@@ -41,14 +41,9 @@ public class UserAdviceService {
     public ResponseEntity<?> updateAdvice(Long adviceId, ReplyAdviceDto requestDto,
                                           PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
         UserAdvice optionalAdvice = checkAdvice(adviceId);
-        if (optionalAdvice == null) {
-            throw new UserAdviceNotFoundException();
-        }
-        adviceRepository.save(buildReplyAdvice(requestDto));
+        optionalAdvice.update(requestDto);
+        adviceRepository.save(optionalAdvice);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -57,6 +52,9 @@ public class UserAdviceService {
     @Transactional(readOnly = true)
     public User checkUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return optionalUser.orElse(null);
     }
 
@@ -64,6 +62,9 @@ public class UserAdviceService {
     @Transactional(readOnly = true)
     public UserAdvice checkAdvice(Long adviceId) {
         Optional<UserAdvice> optionalAdvice = adviceRepository.findById(adviceId);
+        if (optionalAdvice.isEmpty()) {
+            throw new UserAdviceNotFoundException();
+        }
         return optionalAdvice.orElse(null);
     }
 
@@ -80,11 +81,4 @@ public class UserAdviceService {
                 .build();
     }
 
-    // 1대1 문의 답변여부 빌드
-    @Transactional
-    public UserAdvice buildReplyAdvice(ReplyAdviceDto requestDto) {
-        return UserAdvice.builder()
-                .isClear(requestDto.getIsClear())
-                .build();
-    }
 }

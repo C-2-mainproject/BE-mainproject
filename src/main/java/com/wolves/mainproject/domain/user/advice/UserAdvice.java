@@ -2,6 +2,7 @@ package com.wolves.mainproject.domain.user.advice;
 
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.dto.request.ReplyAdviceDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,4 +48,8 @@ public class UserAdvice extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User user;
+
+    public void update(ReplyAdviceDto requestDto) {
+        this.isClear = requestDto.getIsClear();
+    }
 }

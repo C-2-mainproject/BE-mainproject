@@ -2,6 +2,8 @@ package com.wolves.mainproject.domain.frequently.question;
 
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.dto.request.AdminNoteDto;
+import com.wolves.mainproject.dto.request.FrequentlyQuestionDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +38,11 @@ public class FrequentlyQuestion extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User user;
+
+    public void update(FrequentlyQuestionDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.category = requestDto.getCategory();
+        this.reply = requestDto.getReply();
+    }
+
 }
