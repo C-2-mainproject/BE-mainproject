@@ -1,6 +1,7 @@
 package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
+import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyWordStorageService;
@@ -26,6 +27,13 @@ public class MyWordStorageApiController {
     @PutMapping("/api/user/wordstorage/id/{wordStorageId}")
     public ResponseEntity<Void> updateWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody RequestMyWordStorageDto dto){
         myWordStorageService.updateWordStorage(principalDetails.getUser(), dto, wordStorageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @AuthValidation
+    @PutMapping("/api/user/wordstorage/id/{wordStorageId}/bookmark")
+    public ResponseEntity<Void> postBookmarkedWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PostBookmarkedWordStorageDto dto){
+        myWordStorageService.postBookmarkedWordStorage(principalDetails.getUser(), dto, wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
