@@ -59,6 +59,12 @@ public class MyWordStorageService {
         return mappings.map(wordStorageLikeMapping -> new WordStorageWithNoWordDto(wordStorageLikeMapping.getWordStorage()));
     }
 
+    @Transactional(readOnly = true)
+    public Page<WordStorageWithNoWordDto> findMyWordStorages(User user, Pageable pageable){
+        Page<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, pageable);
+        return wordStorages.map(WordStorageWithNoWordDto::new);
+    }
+
     private WordStorage getWordStorageWithCredential(User user, long wordStorageId){
         WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
         if (!user.equals(wordStorage.getUser()))

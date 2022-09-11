@@ -55,4 +55,10 @@ public class MyWordStorageApiController {
     public ResponseEntity<Page<WordStorageWithNoWordDto>> findLikeWordStorageList(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(myWordStorageService.findLikeWordStorageList(principalDetails.getUser(), pageable), HttpStatus.OK);
     }
+
+    @AuthValidation
+    @GetMapping("/api/user/wordstorage/my")
+    public ResponseEntity<Page<WordStorageWithNoWordDto>> findMyWordStorages(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        return new ResponseEntity<>(myWordStorageService.findMyWordStorages(principalDetails.getUser(), pageable), HttpStatus.OK);
+    }
 }
