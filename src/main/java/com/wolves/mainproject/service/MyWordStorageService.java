@@ -8,6 +8,7 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageUnauthorizedException;
@@ -38,6 +39,12 @@ public class MyWordStorageService {
 
     @Transactional
     public void postBookmarkedWordStorage(User user, PostBookmarkedWordStorageDto dto, long wordStorageId){
+        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+        wordStorage.update(dto);
+    }
+
+    @Transactional
+    public void updateWordStorageStatus(User user, UpdateMyWordStorageStatusDto dto, long wordStorageId){
         WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
         wordStorage.update(dto);
     }

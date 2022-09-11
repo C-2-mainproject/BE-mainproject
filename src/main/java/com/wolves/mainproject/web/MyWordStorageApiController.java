@@ -3,6 +3,7 @@ package com.wolves.mainproject.web;
 import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyWordStorageService;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +38,10 @@ public class MyWordStorageApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @AuthValidation
+    @PutMapping("/api/user/wordstorage/id/{wordStorageId}/status")
+    public ResponseEntity<Void> updateWordStorageStatus(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody UpdateMyWordStorageStatusDto dto){
+        myWordStorageService.updateWordStorageStatus(principalDetails.getUser(), dto, wordStorageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
