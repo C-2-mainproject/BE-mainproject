@@ -6,13 +6,18 @@ import com.wolves.mainproject.domain.word.storage.WordStorage;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeMapping;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageUnauthorizedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MyWordStorageService {
     private final WordStorageRepository wordStorageRepository;
     private final WordStorageCategoryRepository wordStorageCategoryRepository;
+    private final WordStorageLikeRepository wordStorageLikeRepository;
 
     @Transactional
     public void insertWordStorage(User user, RequestMyWordStorageDto dto){
@@ -45,6 +51,12 @@ public class MyWordStorageService {
     public void updateWordStorageStatus(User user, UpdateMyWordStorageStatusDto dto, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         wordStorage.update(dto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<WordStorageWithNoWordDto> findLikeWordStorageList(User user, Pageable pageable){
+        Page<WordStorageLikeMapping> mappings = wordStorageLikeRepository.findAllByUser(user, pageable);
+        return mappings.map(wordStorageLikeMapping -> new WordStorageWithNoWordDto(wordStorageLikeMapping.getWordStorage()));
     }
 
     private WordStorage getWordStorageWithCredential(User user, long wordStorageId){

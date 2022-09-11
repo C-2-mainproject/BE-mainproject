@@ -194,10 +194,10 @@ public class MyWordStorageServiceTest {
         WordStorageLike wordStorageLike = WordStorageLike.builder().user(user).wordStorage(wordStorage).build();
         wordStorageLikeRepository.save(wordStorageLike);
         // When
-        List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user).orElse(null);
+        //List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user).orElse(null);
         List<WordStorage> wordStorages = new ArrayList<>();
-        assert wordStorageLikeMappings != null;
-        wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
+//        assert wordStorageLikeMappings != null;
+//        wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
         // Then
         assertEquals(1, wordStorages.size());
     }

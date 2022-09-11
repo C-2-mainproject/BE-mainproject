@@ -14,4 +14,8 @@ public enum StatusType {
 
         return StatusType.PRIVATE;
     }
+
+    public boolean getValue(){
+        return value;
+    }
 }

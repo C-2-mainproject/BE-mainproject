@@ -4,9 +4,14 @@ import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyWordStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,5 +48,11 @@ public class MyWordStorageApiController {
     public ResponseEntity<Void> updateWordStorageStatus(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody UpdateMyWordStorageStatusDto dto){
         myWordStorageService.updateWordStorageStatus(principalDetails.getUser(), dto, wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @AuthValidation
+    @GetMapping("/api/user/wordstorage/like")
+    public ResponseEntity<Page<WordStorageWithNoWordDto>> findLikeWordStorageList(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        return new ResponseEntity<>(myWordStorageService.findLikeWordStorageList(principalDetails.getUser(), pageable), HttpStatus.OK);
     }
 }

@@ -15,6 +15,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,6 +53,9 @@ public class WordStorage extends Timestamped {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusType status;
+
+    @Column(name = "last_test_at")
+    private LocalDateTime lastTestAt;
 
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
         this.title = dto.getTitle();
