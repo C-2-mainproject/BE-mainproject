@@ -30,23 +30,28 @@ public class MyWordStorageService {
 
     @Transactional
     public void updateWordStorage(User user, RequestMyWordStorageDto dto, long wordStorageId){
-        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
-        if (!user.equals(wordStorage.getUser()))
-            throw new WordStorageUnauthorizedException();
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         wordStorage.update(dto, category);
     }
 
     @Transactional
     public void postBookmarkedWordStorage(User user, PostBookmarkedWordStorageDto dto, long wordStorageId){
-        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         wordStorage.update(dto);
     }
 
     @Transactional
     public void updateWordStorageStatus(User user, UpdateMyWordStorageStatusDto dto, long wordStorageId){
-        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         wordStorage.update(dto);
+    }
+
+    private WordStorage getWordStorageWithCredential(User user, long wordStorageId){
+        WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+        if (!user.equals(wordStorage.getUser()))
+            throw new WordStorageUnauthorizedException();
+        return wordStorage;
     }
 
 }
