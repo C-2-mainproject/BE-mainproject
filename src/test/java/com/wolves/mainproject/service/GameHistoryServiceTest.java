@@ -3,6 +3,8 @@ package com.wolves.mainproject.service;
 
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import com.wolves.mainproject.domain.dynamo.word.WordRepository;
+import com.wolves.mainproject.domain.game.history.GameHistoryRepository;
+import com.wolves.mainproject.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

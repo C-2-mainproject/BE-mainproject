@@ -27,9 +27,9 @@ public class GameHistory extends CreateTimestamped {
     @OneToOne
     private User user;
 
-    @Column(columnDefinition = "Bigint default 0")
+    @Column(name = "win_count", columnDefinition = "Bigint default 0")
     private long winCount;
 
-    @Column(columnDefinition = "Bigint default 0")
+    @Column(name = "lose_count", columnDefinition = "Bigint default 0")
     private long loseCount;
 }

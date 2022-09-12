@@ -11,5 +11,5 @@ import java.util.Optional;
 
 public interface WordStorageRepository extends JpaRepository<WordStorage, Long> {
     Page<WordStorage> findAllByUser(User user, Pageable pageable);
-    List<WordStorage> findAllByTitleContainingOrDescriptionContaining(String title, String description);
+    List<WordStorage> findAllByTitleContainingOrDescriptionContainingAndUser(String title, String description, User user);
 }

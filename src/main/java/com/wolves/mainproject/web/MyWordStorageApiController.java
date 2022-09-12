@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 public class MyWordStorageApiController {
@@ -60,5 +62,11 @@ public class MyWordStorageApiController {
     @GetMapping("/api/user/wordstorage/my")
     public ResponseEntity<Page<WordStorageWithNoWordDto>> findMyWordStorages(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(myWordStorageService.findMyWordStorages(principalDetails.getUser(), pageable), HttpStatus.OK);
+    }
+
+    @AuthValidation
+    @GetMapping("/api/user/wordstorage/my/search")
+    public ResponseEntity<List<WordStorageWithNoWordDto>> findSearchInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam String search){
+        return new ResponseEntity<>(myWordStorageService.findSearchInMyWordStorage(principalDetails.getUser(), search), HttpStatus.OK);
     }
 }

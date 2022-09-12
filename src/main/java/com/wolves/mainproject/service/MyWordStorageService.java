@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class MyWordStorageService {
@@ -63,6 +65,12 @@ public class MyWordStorageService {
     public Page<WordStorageWithNoWordDto> findMyWordStorages(User user, Pageable pageable){
         Page<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, pageable);
         return wordStorages.map(WordStorageWithNoWordDto::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WordStorageWithNoWordDto> findSearchInMyWordStorage(User user, String searchData){
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByTitleContainingOrDescriptionContainingAndUser(searchData, searchData, user);
+        return wordStorages.stream().map(WordStorageWithNoWordDto::new).toList();
     }
 
     private WordStorage getWordStorageWithCredential(User user, long wordStorageId){

@@ -176,7 +176,7 @@ public class MyWordStorageServiceTest {
         User user = userRepository.findById(1L).orElseThrow();
         String searchData = "des";
         // When
-        List<WordStorage> wordStoragePS = wordStorageRepository.findAllByTitleContainingOrDescriptionContaining(searchData, searchData);
+        List<WordStorage> wordStoragePS = wordStorageRepository.findAllByTitleContainingOrDescriptionContainingAndUser(searchData, searchData, user);
         // Then
         assertEquals("test", wordStoragePS.get(0).getTitle());
     }
