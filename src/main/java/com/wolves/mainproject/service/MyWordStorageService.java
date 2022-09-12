@@ -13,6 +13,7 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.request.UpdateWordDto;
 import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
@@ -79,10 +80,15 @@ public class MyWordStorageService {
     }
 
     @Transactional(readOnly = true)
-    public WordDto findWordInWordStorage(User user, long wordStorageId){
+    public WordDto findWordInMyWordStorage(User user, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         Word word = wordRepository.findById(wordStorage.getId()).orElseThrow(WordNotFoundException::new);
         return new WordDto(word.getWords(), word.getMeanings());
+    }
+
+    public void updateWordInMyWordStorage(User user, UpdateWordDto dto, long wordStorageId){
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
+        wordRepository.save(dto.toWord(wordStorage.getId()));
     }
 
     // @TODO : Need change to use jpa only
