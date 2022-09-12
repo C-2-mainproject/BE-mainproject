@@ -4,6 +4,7 @@ import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyWordStorageService;
@@ -68,5 +69,11 @@ public class MyWordStorageApiController {
     @GetMapping("/api/user/wordstorage/my/search")
     public ResponseEntity<List<WordStorageWithNoWordDto>> findSearchInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam String search){
         return new ResponseEntity<>(myWordStorageService.findSearchInMyWordStorage(principalDetails.getUser(), search), HttpStatus.OK);
+    }
+
+    @AuthValidation
+    @GetMapping("/api/user/wordstorage/id/{wordStorageId}")
+    public ResponseEntity<WordDto> findWordInWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long wordStorageId){
+        return new ResponseEntity<>(myWordStorageService.findWordInWordStorage(principalDetails.getUser(), wordStorageId), HttpStatus.OK);
     }
 }

@@ -1,5 +1,7 @@
 package com.wolves.mainproject.service;
 
+import com.wolves.mainproject.domain.dynamo.word.Word;
+import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.domain.word.storage.WordStorage;
@@ -11,8 +13,10 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
+import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageUnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,7 @@ public class MyWordStorageService {
     private final WordStorageRepository wordStorageRepository;
     private final WordStorageCategoryRepository wordStorageCategoryRepository;
     private final WordStorageLikeRepository wordStorageLikeRepository;
+    private final WordRepository wordRepository;
 
     @Transactional
     public void insertWordStorage(User user, RequestMyWordStorageDto dto){
@@ -73,9 +78,17 @@ public class MyWordStorageService {
         return wordStorages.stream().map(WordStorageWithNoWordDto::new).toList();
     }
 
+    @Transactional(readOnly = true)
+    public WordDto findWordInWordStorage(User user, long wordStorageId){
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
+        Word word = wordRepository.findById(wordStorage.getId()).orElseThrow(WordNotFoundException::new);
+        return new WordDto(word.getWords(), word.getMeanings());
+    }
+
+    // @TODO : Need change to use jpa only
     private WordStorage getWordStorageWithCredential(User user, long wordStorageId){
         WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
-        if (!user.equals(wordStorage.getUser()))
+        if (user.getId() != wordStorage.getId())
             throw new WordStorageUnauthorizedException();
         return wordStorage;
     }

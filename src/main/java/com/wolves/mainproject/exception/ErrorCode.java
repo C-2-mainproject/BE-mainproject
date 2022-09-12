@@ -75,6 +75,7 @@ public enum ErrorCode {
     // Word
     WORD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W201", "단어(영)가 너무 깁니다."),
     WORD_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W202", "단어(영) 설명이 너무 깁니다."),
+    WORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "W203", "단어가 존재하지 않습니다."),
 
     // Meaning
     MEANING_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "M001", "단어(뜻)가 너무 깁니다."),
