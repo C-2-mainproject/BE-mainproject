@@ -22,13 +22,14 @@ public class GameHistory extends CreateTimestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name = "winner_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToOne
-    private User winner;
+    private User user;
 
-    @JoinColumn(name = "looser_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToOne
-    private User looser;
+    @Column(columnDefinition = "Bigint default 0")
+    private long winCount;
+
+    @Column(columnDefinition = "Bigint default 0")
+    private long loseCount;
 }

@@ -1,5 +1,6 @@
 package com.wolves.mainproject.dto.request;
 
+import com.wolves.mainproject.domain.dynamo.word.Word;
 import lombok.*;
 
 import java.util.List;
@@ -12,8 +13,12 @@ import java.util.List;
 public class UpdateWordDto {
     private List<String> words;
     private List<List<String>> meanings;
-    private List<List<String>> pronunciations;
-    private List<String> descriptions;
 
-
+    public Word toWord(long id){
+        return Word.builder()
+                .wordStorageId(id)
+                .words(words)
+                .meanings(meanings)
+                .build();
+    }
 }

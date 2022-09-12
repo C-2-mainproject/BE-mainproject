@@ -1,5 +1,8 @@
 package com.wolves.mainproject.service;
 
+import com.wolves.mainproject.domain.game.history.GameHistory;
+import com.wolves.mainproject.domain.game.history.GameHistoryRepository;
+import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.dto.request.RequestSignupDto;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +17,12 @@ public class AuthService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final GameHistoryRepository gameHistoryRepository;
+
     @Transactional
     public void userRegister(RequestSignupDto dto){
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        userRepository.save(dto.toUser());
+        User userPS = userRepository.save(dto.toUser());
+        gameHistoryRepository.save(dto.toGameHistory(userPS));
     }
 }

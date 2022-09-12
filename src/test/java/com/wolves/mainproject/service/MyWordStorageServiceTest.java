@@ -1,15 +1,17 @@
 package com.wolves.mainproject.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.domain.word.storage.WordStorage;
-import com.wolves.mainproject.domain.word.storage.WordStorageMapping;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeMapping;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +44,11 @@ public class MyWordStorageServiceTest {
     @Autowired
     private WordStorageLikeRepository wordStorageLikeRepository;
 
+    @Autowired
+    private DynamoDBMapperConfig config;
 
+    @Autowired
+    private DynamoDBMapper mapper;
 
     @Autowired
     private WordRepository wordRepository;
@@ -187,11 +194,12 @@ public class MyWordStorageServiceTest {
         WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
         WordStorageLike wordStorageLike = WordStorageLike.builder().user(user).wordStorage(wordStorage).build();
         wordStorageLikeRepository.save(wordStorageLike);
+        Pageable pageable = null;
         // When
-        //List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user).orElse(null);
+        List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user, pageable).stream().toList();
         List<WordStorage> wordStorages = new ArrayList<>();
-//        assert wordStorageLikeMappings != null;
-//        wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
+        assert wordStorageLikeMappings != null;
+        wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));
         // Then
         assertEquals(1, wordStorages.size());
     }
@@ -206,9 +214,9 @@ public class MyWordStorageServiceTest {
         // Given
         User user = userRepository.findById(1L).orElseThrow();
         // When
-        //List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user);
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, null).stream().toList();
         // Then
-        //assertEquals(1, wordStorages.size());
+        assertEquals(1, wordStorages.get(0).getId());
     }
 
     /**
@@ -218,45 +226,29 @@ public class MyWordStorageServiceTest {
      **/
     @Test
     void updateWordTest(){
-//        // Given
-//        long requestId = 1L;
-//        UpdateWordDto dto = getUpdateWordDto();
-//        WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
-//        List<Word> words = dto.toWords(wordStorage);
-//
-//        // When
-//        List<Word> wordsPS = wordRepository.saveAll(words);
-//        List<Meaning> meaningsPS = meaningRepository.saveAll(dto.toMeanings(words));
-//        List<Prononciation> pronunciationsPS = prononciationRepository.saveAll(dto.toPronunciations(words));
-//        // Then
-//        assertEquals("a", wordsPS.get(0).getWord());
-//        assertEquals("test", wordsPS.get(0).getDescription());
-//        assertEquals("a뜻1", meaningsPS.get(0).getMeaning());
-//        assertEquals("a뜻2", meaningsPS.get(1).getMeaning());
-//        assertEquals("명사", pronunciationsPS.get(0).getPrononciation());
-//        assertEquals("동사", pronunciationsPS.get(1).getPrononciation());
+        // Given
+        long requestId = 1L;
+        UpdateWordDto dto = getUpdateWordDto();
+        Word updateWord = dto.toWord(requestId);
+        // When
+        wordRepository.save(updateWord);
+        // Then
+        assertEquals("a", updateWord.getWords().get(0));
+        assertEquals("a뜻1", updateWord.getMeanings().get(0).get(0));
     }
 
     private UpdateWordDto getUpdateWordDto(){
         List<String> words = new ArrayList<>();
         List<List<String>> meanings = new ArrayList<>();
         List<String> meaning = new ArrayList<>();
-        List<List<String>> pronunciations = new ArrayList<>();
-        List<String> pronunciation = new ArrayList<>();
-        List<String> descriptions = new ArrayList<>();
 
         words.add("a");
         meaning.add("a뜻1"); meaning.add("a뜻2");
         meanings.add(meaning);
-        pronunciation.add("명사"); pronunciation.add("동사");
-        pronunciations.add(pronunciation);
-        descriptions.add("test");
 
         return UpdateWordDto.builder()
                 .words(words)
                 .meanings(meanings)
-                .pronunciations(pronunciations)
-                .descriptions(descriptions)
                 .build();
     }
 
