@@ -32,7 +32,7 @@ public class FrequentlyQuestionService {
                                               PrincipalDetails principalDetails) {
         checkUser(principalDetails.getUser().getId());
         frequentlyQuestionRepository.save(buildFrequently(requestDto, principalDetails));
-        return new ResponseEntity<>("작동함", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 자묻질 전체조회
@@ -47,24 +47,17 @@ public class FrequentlyQuestionService {
     public ResponseEntity<?> updateFrequently(Long frequentlyId, FrequentlyQuestionDto requestDto,
                                               PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
         FrequentlyQuestion frequently = checkFrequency(frequentlyId);
-        if (frequently == null) {
-            throw new FrequentlyQuestionNotFoundException();
-        }
-        frequentlyQuestionRepository.save(buildFrequently(requestDto, principalDetails));
+        frequently.update(requestDto);
+        frequentlyQuestionRepository.save(frequently);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 자묻질 삭제
     @Transactional
-    public ResponseEntity<?> deleteFrequently(Long frequentlyId) {
+    public ResponseEntity<?> deleteFrequently(Long frequentlyId, PrincipalDetails principalDetails) {
+        User optionalUser = checkUser(principalDetails.getUser().getId());
         FrequentlyQuestion frequently = checkFrequency(frequentlyId);
-        if (frequently == null) {
-            throw new FrequentlyQuestionNotFoundException();
-        }
         frequentlyQuestionRepository.delete(frequently);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -103,6 +96,9 @@ public class FrequentlyQuestionService {
     @Transactional(readOnly = true)
     public User checkUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return optionalUser.orElse(null);
     }
 
@@ -110,6 +106,9 @@ public class FrequentlyQuestionService {
     @Transactional(readOnly = true)
     public FrequentlyQuestion checkFrequency(Long frequentlyId) {
         Optional<FrequentlyQuestion> optionalFrequently = frequentlyQuestionRepository.findById(frequentlyId);
+        if (optionalFrequently.isEmpty()) {
+            throw new FrequentlyQuestionNotFoundException();
+        }
         return optionalFrequently.orElse(null);
     }
 

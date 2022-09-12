@@ -38,8 +38,9 @@ public class FrequentlyQuestionController {
 
     @AdminValidation
     @DeleteMapping("/api/support/frequently/id/{frequentlyId}")
-    public ResponseEntity<?> deleteFrequently(@PathVariable Long frequentlyId){
-        return frequentlyQuestionService.deleteFrequently(frequentlyId);
+    public ResponseEntity<?> deleteFrequently(@PathVariable Long frequentlyId,
+                                              @AuthenticationPrincipal PrincipalDetails principalDetails){
+        return frequentlyQuestionService.deleteFrequently(frequentlyId, principalDetails);
     }
 
 }

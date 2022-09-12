@@ -12,6 +12,7 @@ import com.wolves.mainproject.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,24 +48,18 @@ public class AdminNoteService {
     public ResponseEntity<?> updateNote(Long noteId, AdminNoteDto requestDto,
                                         PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
         AdminNote adminNote = checkNote(noteId);
-        if (adminNote == null) {
-            throw new AdminNoteNotFoundException();
-        }
-        noteRepository.save(buildNote(requestDto, principalDetails));
+        adminNote.update(requestDto);
+        noteRepository.save(adminNote);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 관리자노트 삭제
     @Transactional
-    public ResponseEntity<?> deleteNote(Long frequentlyId) {
+    public ResponseEntity<?> deleteNote(Long frequentlyId,
+                                        PrincipalDetails principalDetails) {
+        User optionalUser = checkUser(principalDetails.getUser().getId());
         AdminNote adminNote = checkNote(frequentlyId);
-        if (adminNote == null) {
-            throw new AdminNoteNotFoundException();
-        }
         noteRepository.delete(adminNote);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -102,6 +97,9 @@ public class AdminNoteService {
     @Transactional(readOnly = true)
     public User checkUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return optionalUser.orElse(null);
     }
 
@@ -109,6 +107,9 @@ public class AdminNoteService {
     @Transactional(readOnly = true)
     public AdminNote checkNote(Long noteId) {
         Optional<AdminNote> optionalNote = noteRepository.findById(noteId);
+        if (optionalNote.isEmpty()) {
+            throw new AdminNoteNotFoundException();
+        }
         return optionalNote.orElse(null);
     }
 }

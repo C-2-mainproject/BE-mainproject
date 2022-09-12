@@ -1,6 +1,6 @@
 package com.wolves.mainproject.config.oauth.provider;
 
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.type.RoleType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 

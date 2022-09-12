@@ -37,7 +37,8 @@ public class AdminNoteController {
 
     @AdminValidation
     @DeleteMapping("/api/support/admin/note/id/{noteId}")
-    public ResponseEntity<?> deleteNote(@PathVariable Long noteId){
-        return adminNoteService.deleteNote(noteId);
+    public ResponseEntity<?> deleteNote(@PathVariable Long noteId,
+                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
+        return adminNoteService.deleteNote(noteId, principalDetails);
     }
 }

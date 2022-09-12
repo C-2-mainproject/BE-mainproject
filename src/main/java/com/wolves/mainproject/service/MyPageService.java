@@ -30,12 +30,7 @@ public class MyPageService {
     public ResponseEntity<?> getUserToPassword(PasswordDto requestDto,
                                                PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
-        if (!checkPassword(requestDto, optionalUser)) {
-            throw new CommonInvalidInputValue();
-        }
+        checkPassword(requestDto, optionalUser);
         return new ResponseEntity<>(buildUserDto(optionalUser),HttpStatus.OK);
     }
 
@@ -44,10 +39,7 @@ public class MyPageService {
     public ResponseEntity<?> updateUser(UserDto requestDto,
                                         PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
-        userRepository.save(buildUser(requestDto));
+        userRepository.save(requestDto.toUser(optionalUser));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -56,25 +48,17 @@ public class MyPageService {
     public ResponseEntity<?> updatePassword(PasswordDto requestDto,
                                             PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
         userRepository.save(requestDto.toUser(passwordEncoder.encode(requestDto.getPassword()),optionalUser));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 회원탈퇴
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> deleteUser(PasswordDto requestDto,
                                         PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        if (optionalUser == null) {
-            throw new UserNotFoundException();
-        }
-        if (!checkPassword(requestDto, optionalUser)) {
-            throw new CommonInvalidInputValue();
-        }
-        userRepository.delete(optionalUser);
+        checkPassword(requestDto, optionalUser);
+        userRepository.deleteById(optionalUser.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -90,29 +74,22 @@ public class MyPageService {
                 .build();
     }
 
-    // 유저빌드 / 위 아래 메소드를 하나로 어찌 합쳐야할까...
-    @Transactional
-    public User buildUser(UserDto requestDto) {
-        return User.builder()
-                .nickname(requestDto.getNickname())
-                .profileImage(requestDto.getProfileImage())
-                .ageGroup(requestDto.getAgeGroup())
-                .gender(requestDto.getGender())
-                .build();
-    }
-
     // 유저체크
     @Transactional(readOnly = true)
     public User checkUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return optionalUser.orElse(null);
     }
 
     // 비밀번호 확인
     @Transactional(readOnly = true)
-    public boolean checkPassword(PasswordDto requestDto,
-                                 User user) {
-        return passwordEncoder.matches(requestDto.getPassword(), user.getPassword());
+    public void checkPassword(PasswordDto requestDto,
+                              User user) {
+        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
+            throw new CommonInvalidInputValue();
     }
 
 }
