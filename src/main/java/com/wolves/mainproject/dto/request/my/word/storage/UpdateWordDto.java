@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.request;
+package com.wolves.mainproject.dto.request.my.word.storage;
 
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import lombok.*;

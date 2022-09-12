@@ -1,10 +1,10 @@
 package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
-import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
-import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
-import com.wolves.mainproject.dto.request.UpdateWordDto;
+import com.wolves.mainproject.dto.request.my.word.storage.PostBookmarkedWordStorageDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.my.word.storage.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.request.my.word.storage.UpdateWordDto;
 import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;

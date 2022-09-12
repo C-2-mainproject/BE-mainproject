@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.request;
+package com.wolves.mainproject.dto.request.my.word.storage;
 
 import lombok.*;
 

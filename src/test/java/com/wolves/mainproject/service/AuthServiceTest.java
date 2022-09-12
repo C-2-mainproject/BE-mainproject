@@ -2,7 +2,7 @@ package com.wolves.mainproject.service;
 
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
-import com.wolves.mainproject.dto.request.RequestSignupDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestSignupDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

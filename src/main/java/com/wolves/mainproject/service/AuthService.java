@@ -1,10 +1,9 @@
 package com.wolves.mainproject.service;
 
-import com.wolves.mainproject.domain.game.history.GameHistory;
 import com.wolves.mainproject.domain.game.history.GameHistoryRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
-import com.wolves.mainproject.dto.request.RequestSignupDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestSignupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.request;
+package com.wolves.mainproject.dto.request.my.word.storage;
 
 import com.wolves.mainproject.domain.game.history.GameHistory;
 import com.wolves.mainproject.domain.user.User;

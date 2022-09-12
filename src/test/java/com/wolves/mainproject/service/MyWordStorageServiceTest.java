@@ -13,10 +13,10 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRe
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeMapping;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
-import com.wolves.mainproject.dto.request.PostBookmarkedWordStorageDto;
-import com.wolves.mainproject.dto.request.RequestMyWordStorageDto;
-import com.wolves.mainproject.dto.request.UpdateMyWordStorageStatusDto;
-import com.wolves.mainproject.dto.request.UpdateWordDto;
+import com.wolves.mainproject.dto.request.my.word.storage.PostBookmarkedWordStorageDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestMyWordStorageDto;
+import com.wolves.mainproject.dto.request.my.word.storage.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.dto.request.my.word.storage.UpdateWordDto;
 import com.wolves.mainproject.type.StatusType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
