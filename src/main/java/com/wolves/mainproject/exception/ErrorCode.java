@@ -81,7 +81,9 @@ public enum ErrorCode {
     MEANING_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "M001", "단어(뜻)가 너무 깁니다."),
 
     // Pronounciation
-    PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다.");
+    PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다."),
+
+    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다.");
 
     private HttpStatus status;
     private String code;
