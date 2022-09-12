@@ -5,6 +5,7 @@ import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.domain.word.storage.WordStorage;
+import com.wolves.mainproject.domain.word.storage.WordStorageMapping;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
@@ -157,7 +158,7 @@ public class MyWordStorageServiceTest {
     }
 
     /**
-     * @Description : 내 단어장 내 단어 검색
+     * @Description : 내 단어장 내 제목+내용 검색
      * @return : 검색한 단어를 가지고 있는 단어장 List
      * @Author : Jangdongha
      **/
@@ -165,16 +166,12 @@ public class MyWordStorageServiceTest {
     void findWordInMyWordStorageTest(){
         // Given
         WordStorage wordStorage = wordStorageRepository.findById(1L).orElseThrow();
-        //Word word = Word.builder().word("test").description("testDescription").wordStorage(wordStorage).build();
-        //wordRepository.save(word);
+        User user = userRepository.findById(1L).orElseThrow();
+        String searchData = "des";
         // When
-        //List<WordMapping> wordMappings = wordRepository.findAllByWord(word.getWord()).orElse(null);
-        List<WordStorage> wordStorages = new ArrayList<>();
-        //assert wordMappings != null;
-        //wordMappings.forEach(wordMapping -> wordStorages.add(wordMapping.getWordStorage()));
+        List<WordStorage> wordStoragePS = wordStorageRepository.findAllByTitleContainingOrDescriptionContaining(searchData, searchData);
         // Then
-        assertEquals(1, wordStorages.size());
-        assertEquals(wordStorage.getId(), wordStorages.get(0).getId());
+        assertEquals("test", wordStoragePS.get(0).getTitle());
     }
 
     /**
