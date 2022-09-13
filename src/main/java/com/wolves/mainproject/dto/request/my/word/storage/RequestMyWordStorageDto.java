@@ -16,6 +16,7 @@ public class RequestMyWordStorageDto {
     private String category;
     private String description;
     private boolean status;
+    private String type;
 
     public WordStorage toWordStorage(WordStorageCategory category, User user){
         return WordStorage.builder()

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @EnableScan
 @Repository
 public interface WordRepository extends CrudRepository<Word, Long> {
+
 }

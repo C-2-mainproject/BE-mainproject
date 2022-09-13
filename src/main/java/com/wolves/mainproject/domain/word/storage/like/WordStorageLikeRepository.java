@@ -13,4 +13,6 @@ public interface WordStorageLikeRepository extends JpaRepository<WordStorageLike
     boolean existsByUserAndWordStorage(User user, WordStorage wordStorage);
     void deleteByUserAndWordStorage(User user, WordStorage wordStorage);
     Page<WordStorageLikeMapping> findAllByUser(User user, Pageable pageable);
+
+    WordStorageLike findByUserAndWordStorage(User user, WordStorage likeWordStorage);
 }
