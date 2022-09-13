@@ -47,7 +47,7 @@ public class WordStorage extends Timestamped {
     @Column(nullable = false, columnDefinition="bigint default 0", name = "like_count")
     private long likeCount;
 
-    @Column(nullable = false, columnDefinition = "boolean default false", name = "is_bookmarked")
+    @Column(nullable = true, columnDefinition = "boolean default false", name = "is_bookmarked")
     private boolean isBookmarked;
 
     @Enumerated(EnumType.STRING)
@@ -56,6 +56,18 @@ public class WordStorage extends Timestamped {
 
     @Column(name = "last_test_at")
     private LocalDateTime lastTestAt;
+
+    @Column
+    private String type;
+
+    public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, String type) {
+        this.title = wordStorage.getTitle();
+        this.description = wordStorage.getDescription();
+        this.wordStorageCategory = category;
+        this.user = user;
+        this.likeCount = 0;
+        this.type = type;
+    }
 
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
         this.title = dto.getTitle();
@@ -68,4 +80,8 @@ public class WordStorage extends Timestamped {
         this.status = StatusType.findByBoolean(dto.isStatus());
     }
     public void update(PostBookmarkedWordStorageDto dto) { this.isBookmarked = dto.isStatus(); }
+
+    public void update(long likeCount) {
+        this.likeCount = likeCount;
+    }
 }

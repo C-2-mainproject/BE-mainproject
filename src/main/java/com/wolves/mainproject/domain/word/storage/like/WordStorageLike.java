@@ -32,4 +32,9 @@ public class WordStorageLike extends CreateTimestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private WordStorage wordStorage;
+
+    public WordStorageLike(User user, WordStorage likeWordStorage) {
+        this.user = user;
+        this.wordStorage = likeWordStorage;
+    }
 }

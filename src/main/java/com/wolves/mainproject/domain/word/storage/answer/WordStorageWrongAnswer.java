@@ -5,6 +5,7 @@ import com.wolves.mainproject.domain.wrong.answer.WrongAnswer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@SuperBuilder
 @Table(name = "word_storage_wrong_answer")
 public class WordStorageWrongAnswer {
     @Id
