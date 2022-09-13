@@ -1,5 +1,6 @@
 package com.wolves.mainproject.domain.board.content;
 
+import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.common.Timestamped;
 import lombok.AllArgsConstructor;
@@ -31,4 +32,7 @@ public class BoardContent extends Timestamped {
     @OneToOne
     private Board board;
 
+    public void update(BoardRequestDto boardRequestDto) {
+        this.content = boardRequestDto.getContent();
+    }
 }
