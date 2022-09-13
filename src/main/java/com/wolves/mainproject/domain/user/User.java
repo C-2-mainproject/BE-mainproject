@@ -1,10 +1,6 @@
 package com.wolves.mainproject.domain.user;
 
 import com.wolves.mainproject.domain.common.Timestamped;
-<<<<<<< HEAD
-import com.wolves.mainproject.dto.request.UserDto;
-=======
->>>>>>> feature/mywordstorage
 import com.wolves.mainproject.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
