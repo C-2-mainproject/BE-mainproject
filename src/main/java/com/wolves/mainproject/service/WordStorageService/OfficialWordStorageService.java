@@ -71,7 +71,6 @@ public class OfficialWordStorageService {
     }
 
     @Transactional
-    // ERD에는 좋아요 생성일이 있는데 Entity에는 없다. 일단 DB 기준으로.
     public String likeOfficialWordStorage(Long id, PrincipalDetails principalDetails) {
         WordStorage likeWordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL,id)
                 .orElseThrow(WordStorageNotFoundException::new);

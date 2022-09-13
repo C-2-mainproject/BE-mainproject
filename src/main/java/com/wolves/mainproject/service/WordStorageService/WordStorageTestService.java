@@ -76,11 +76,13 @@ public class WordStorageTestService {
         WordStorageCategory wordStorageCategory = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
                 .orElseThrow(WordStorageNotFoundException::new).getWordStorageCategory();
 
+        String newTitle = finishWordExamDto.getWordStorageId() + "번 단어장의 오답노트";
+
         // 새 wordStorage 저장
         WordStorage newWordStorage = WordStorage.builder()
                 .wordStorageCategory(wordStorageCategory)
-                .title("오답노트")
-                .description("오답노트")
+                .title(newTitle)
+                .description(newTitle)
                 .status(StatusType.PRIVATE)
                 .user(principalDetails.getUser())
                 .likeCount(0)
