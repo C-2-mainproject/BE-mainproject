@@ -1,10 +1,8 @@
 package com.wolves.mainproject.domain.board;
 
-import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
-import com.wolves.mainproject.domain.board.like.BoardLike;
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
-import com.wolves.mainproject.service.LikeService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

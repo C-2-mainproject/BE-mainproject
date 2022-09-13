@@ -1,6 +1,5 @@
-package com.wolves.mainproject.controller.dto.request;
+package com.wolves.mainproject.dto.request.board;
 
-import com.wolves.mainproject.domain.board.content.BoardContent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class BoardRequestDto {
-    private String title;
+public class BoardCommentRequestDto {
     private String content;
+
 }

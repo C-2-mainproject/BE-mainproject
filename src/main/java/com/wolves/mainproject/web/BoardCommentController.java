@@ -1,7 +1,7 @@
-package com.wolves.mainproject.controller;
+package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.controller.dto.request.BoardCommentRequestDto;
+import com.wolves.mainproject.dto.request.board.BoardCommentRequestDto;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.BoardCommentService;
