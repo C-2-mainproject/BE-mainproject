@@ -57,16 +57,13 @@ public class WordStorage extends Timestamped {
     @Column(name = "last_test_at")
     private LocalDateTime lastTestAt;
 
-    @Column
-    private String type;
-
-    public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, String type) {
+    public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, StatusType status) {
         this.title = wordStorage.getTitle();
         this.description = wordStorage.getDescription();
         this.wordStorageCategory = category;
         this.user = user;
         this.likeCount = 0;
-        this.type = type;
+        this.status = status;
     }
 
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category){

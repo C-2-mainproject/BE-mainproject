@@ -11,13 +11,12 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
-import com.wolves.mainproject.dto.WordStorageDto.WordStorageType;
 import com.wolves.mainproject.dto.WordStorageDto.response.WordInfoDto;
 import com.wolves.mainproject.dto.WordStorageDto.response.WordStorageDetailResponseDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
-import com.wolves.mainproject.exception.user.UserUnauthorizedException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
+import com.wolves.mainproject.type.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,7 +38,7 @@ public class PublicWordStorageService {
     public List<WordStorageMapping> getPublicWordStorageOrderByLikes(int page) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByTypeOrderByLikeCountDesc(WordStorageType.PUBLIC.getType(), pageRequest);
+        return wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
 
     }
 
@@ -49,20 +48,20 @@ public class PublicWordStorageService {
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(search)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        return wordStorageRepository.findByTypeAndWordStorageCategory(WordStorageType.PUBLIC.getType(), searchCategory, pageRequest);
+        return wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.PUBLIC, searchCategory, pageRequest);
     }
 
     @Transactional
     public List<WordStorageMapping> getPublicWordStorageByTitle(String search, int page) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByTypeAndTitleContaining(WordStorageType.PUBLIC.getType(), search, pageRequest);
+        return wordStorageRepository.findByStatusAndTitleContaining(StatusType.PUBLIC, search, pageRequest);
     }
 
     @Transactional
     public WordStorageDetailResponseDto getPublicWordStorageDetails(Long id, PrincipalDetails principalDetails) {
 
-        WordStorage wordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.PUBLIC.getType(), id)
+        WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.PUBLIC, id)
                 .orElseThrow(WordStorageNotFoundException::new);
 
         Word wordList = wordRepository.findById(wordStorage.getId())
@@ -74,7 +73,7 @@ public class PublicWordStorageService {
     @Transactional
     public String likePublicWordStorage(Long id, PrincipalDetails principalDetails) {
 
-        WordStorage likeWordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.PUBLIC.getType(), id)
+        WordStorage likeWordStorage = wordStorageRepository.findByStatusAndId(StatusType.PUBLIC, id)
                 .orElseThrow(WordStorageNotFoundException::new);
         WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
 

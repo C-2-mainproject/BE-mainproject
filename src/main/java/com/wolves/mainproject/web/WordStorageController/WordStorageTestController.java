@@ -4,6 +4,7 @@ import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.domain.word.storage.answer.WrongAnswerMapping;
 import com.wolves.mainproject.dto.WordStorageDto.requset.FinishWordExamRequestDto;
 import com.wolves.mainproject.dto.WordStorageDto.requset.WordExamRequestDto;
+import com.wolves.mainproject.dto.WordStorageDto.response.FinishWordExamResponseDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.WordStorageService.WordStorageTestService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class WordStorageTestController {
     // 단어 시험 종료
     @AuthValidation
     @PostMapping("/api/user/wordstorage/test/end")
-    public ResponseEntity<Long> finishWordExam(@RequestBody FinishWordExamRequestDto finishWordExamDto,
-                                                 @AuthenticationPrincipal PrincipalDetails principalDetails
+    public ResponseEntity<FinishWordExamResponseDto> finishWordExam(@RequestBody FinishWordExamRequestDto finishWordExamDto,
+                                                                    @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
         return ResponseEntity.ok(wordStorageTestService.finishWordExam(finishWordExamDto, principalDetails));
 

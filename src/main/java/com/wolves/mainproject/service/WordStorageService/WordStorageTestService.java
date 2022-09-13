@@ -11,10 +11,9 @@ import com.wolves.mainproject.domain.word.storage.answer.WordStorageWrongAnswerR
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswer;
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswerRepository;
-import com.wolves.mainproject.dto.WordStorageDto.WordStorageType;
 import com.wolves.mainproject.dto.WordStorageDto.requset.FinishWordExamRequestDto;
 import com.wolves.mainproject.dto.WordStorageDto.requset.WordExamRequestDto;
-import com.wolves.mainproject.exception.user.UserUnauthorizedException;
+import com.wolves.mainproject.dto.WordStorageDto.response.FinishWordExamResponseDto;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.type.StatusType;
@@ -43,14 +42,14 @@ public class WordStorageTestService {
 
 
     @Transactional
-    public Long finishWordExam(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
+    public FinishWordExamResponseDto finishWordExam(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
 
         WrongAnswer wrongAnswer = saveAndGetWrongAnswer(finishWordExamDto, principalDetails);
         WordStorage wordStorage = saveAndGetWordStorage(finishWordExamDto, principalDetails);
         saveWordStorageWrongAnswer(wrongAnswer, wordStorage);
         Long newWordStorageId = saveWordAndGetStorageId(finishWordExamDto, wordStorage);
 
-        return newWordStorageId;
+        return new FinishWordExamResponseDto(newWordStorageId);
     }
 
     private Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
@@ -85,7 +84,6 @@ public class WordStorageTestService {
                 .status(StatusType.PRIVATE)
                 .user(principalDetails.getUser())
                 .likeCount(0)
-                .type(WordStorageType.PRIVATE.getType())
                 .build();
 
         wordStorageRepository.save(newWordStorage);
@@ -108,7 +106,7 @@ public class WordStorageTestService {
     @Transactional
     public List<WrongAnswerMapping> getExamHistory(PrincipalDetails principalDetails) {
 
-        return wrongAnswerRepository.customFindALl();
+        return wrongAnswerRepository.customFindALlByUser(principalDetails.getUser()); //;
     }
 
 

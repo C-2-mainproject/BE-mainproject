@@ -11,13 +11,12 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
-import com.wolves.mainproject.dto.WordStorageDto.WordStorageType;
 import com.wolves.mainproject.dto.WordStorageDto.response.WordInfoDto;
 import com.wolves.mainproject.dto.WordStorageDto.response.WordStorageDetailResponseDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
-import com.wolves.mainproject.exception.user.UserUnauthorizedException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
+import com.wolves.mainproject.type.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,7 +38,7 @@ public class OfficialWordStorageService {
     public List<WordStorageMapping> getOfficialWordStorageOrderByLike(int page) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByTypeOrderByLikeCountDesc(WordStorageType.OFFICIAL.getType(), pageRequest);
+        return wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
     }
 
     @Transactional
@@ -49,19 +48,19 @@ public class OfficialWordStorageService {
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(category)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        return wordStorageRepository.findByTypeAndWordStorageCategory(WordStorageType.OFFICIAL.getType(), searchCategory, pageRequest);
+        return wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.OFFICIAL, searchCategory, pageRequest);
     }
 
     @Transactional
     public List<WordStorageMapping> getOfficialWordStorageByTitle(String search, int page) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByTypeAndTitleContaining(WordStorageType.OFFICIAL.getType(), search, pageRequest);
+        return wordStorageRepository.findByStatusAndTitleContaining(StatusType.OFFICIAL, search, pageRequest);
     }
 
     @Transactional
     public WordStorageDetailResponseDto getOfficialWordStorageDetails(Long id, PrincipalDetails principalDetails) {
-        WordStorage wordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.OFFICIAL.getType(), id)
+        WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL, id)
                 .orElseThrow(WordStorageNotFoundException::new);
 
         Word wordList = wordRepository.findById(wordStorage.getId())
@@ -74,7 +73,7 @@ public class OfficialWordStorageService {
     @Transactional
     // ERD에는 좋아요 생성일이 있는데 Entity에는 없다. 일단 DB 기준으로.
     public String likeOfficialWordStorage(Long id, PrincipalDetails principalDetails) {
-        WordStorage likeWordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.OFFICIAL.getType(),id)
+        WordStorage likeWordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL,id)
                 .orElseThrow(WordStorageNotFoundException::new);
         WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
 
@@ -116,10 +115,10 @@ public class OfficialWordStorageService {
         User user = principalDetails.getUser();
         WordStorage wordStorage = wordStorageRepository.findById(id)
                 .orElseThrow(WordStorageNotFoundException::new);
-        WordStorageCategory category = wordStorageCategoryRepository.findByName(WordStorageType.PRIVATE.getType())
+        WordStorageCategory category = wordStorageCategoryRepository.findByName(wordStorage.getWordStorageCategory().getName())
                 .orElseThrow(CategoryNotFoundException::new);
 
-        WordStorage newPrivateWordStorage = new WordStorage(user, wordStorage, category, WordStorageType.PRIVATE.getType());
+        WordStorage newPrivateWordStorage = new WordStorage(user, wordStorage, category, StatusType.PRIVATE);
 
         return wordStorageRepository.save(newPrivateWordStorage).getId();
     }
