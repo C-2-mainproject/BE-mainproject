@@ -61,9 +61,6 @@ public class OfficialWordStorageService {
 
     @Transactional
     public WordStorageDetailResponseDto getOfficialWordStorageDetails(Long id, PrincipalDetails principalDetails) {
-
-        checkLoginStatus(principalDetails);
-
         WordStorage wordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.OFFICIAL.getType(), id)
                 .orElseThrow(WordStorageNotFoundException::new);
 
@@ -77,9 +74,6 @@ public class OfficialWordStorageService {
     @Transactional
     // ERD에는 좋아요 생성일이 있는데 Entity에는 없다. 일단 DB 기준으로.
     public String likeOfficialWordStorage(Long id, PrincipalDetails principalDetails) {
-
-        checkLoginStatus(principalDetails);
-
         WordStorage likeWordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.OFFICIAL.getType(),id)
                 .orElseThrow(WordStorageNotFoundException::new);
         WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
@@ -102,9 +96,6 @@ public class OfficialWordStorageService {
 
     @Transactional
     public String putInMyWordStorage(Long id, PrincipalDetails principalDetails) {
-
-        checkLoginStatus(principalDetails);
-
         long newWordStorageId = saveWordStorage(id, principalDetails);
 
         saveWord(newWordStorageId);
@@ -133,12 +124,5 @@ public class OfficialWordStorageService {
         return wordStorageRepository.save(newPrivateWordStorage).getId();
     }
 
-
-    public void checkLoginStatus(PrincipalDetails principalDetails){
-        if(principalDetails == null){
-            throw new UserUnauthorizedException();
-        }
-
-    }
 
 }

@@ -37,30 +37,42 @@ public class WordStorageTestService {
     @Transactional
     public Word createWordExam(WordExamRequestDto wordExamDto, PrincipalDetails principalDetails) {
 
-        checkLoginStatus(principalDetails);
-
         return wordRepository.findById(wordExamDto.getWordStorageId())
                 .orElseThrow(WordNotFoundException::new);
     }
 
 
     @Transactional
-    public String finishWordExam(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
-        checkLoginStatus(principalDetails);
+    public Long finishWordExam(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
 
-        // 1. wrong answer 테이블에 저장
-        WrongAnswer wrongAnswer = WrongAnswer.builder()
-                .testType(finishWordExamDto.getTestType())
-                .totalWords(finishWordExamDto.getTotalWords())
-                .wrongWords(finishWordExamDto.getWrongWords())
-                .time(finishWordExamDto.getTime())
-                .user(principalDetails.getUser())
+        WrongAnswer wrongAnswer = saveAndGetWrongAnswer(finishWordExamDto, principalDetails);
+        WordStorage wordStorage = saveAndGetWordStorage(finishWordExamDto, principalDetails);
+        saveWordStorageWrongAnswer(wrongAnswer, wordStorage);
+        Long newWordStorageId = saveWordAndGetStorageId(finishWordExamDto, wordStorage);
+
+        return newWordStorageId;
+    }
+
+    private Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
+        Word word = Word.builder()
+                .wordStorageId(newWordStorage.getId())
+                .words(finishWordExamDto.getCollectionWrongWord().getWord())
+                .meanings(finishWordExamDto.getCollectionWrongWord().getMeaning())
+                        .build();
+
+        return wordRepository.save(word).getWordStorageId();
+    }
+
+    private void saveWordStorageWrongAnswer(WrongAnswer wrongAnswer, WordStorage newWordStorage) {
+        WordStorageWrongAnswer wordStorageWrongAnswer = WordStorageWrongAnswer.builder()
+                .wrongAnswer(wrongAnswer)
+                .wordStorage(newWordStorage)
                 .build();
 
-        wrongAnswerRepository.save(wrongAnswer);
+        wordStorageWrongAnswerRepository.save(wordStorageWrongAnswer);
+    }
 
-        // 2. word storage 테이블에 저장
-
+    private WordStorage saveAndGetWordStorage(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
         // 기존 wordStorageCategory 확인을 위한 조회
         WordStorageCategory wordStorageCategory = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
                 .orElseThrow(WordStorageNotFoundException::new).getWordStorageCategory();
@@ -77,41 +89,27 @@ public class WordStorageTestService {
                 .build();
 
         wordStorageRepository.save(newWordStorage);
+        return newWordStorage;
+    }
 
-        // 3. wrong storage wrong answer 테이블에 저장
-        WordStorageWrongAnswer wordStorageWrongAnswer = WordStorageWrongAnswer.builder()
-                .wrongAnswer(wrongAnswer)
-                .wordStorage(newWordStorage)
+    private WrongAnswer saveAndGetWrongAnswer(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
+        WrongAnswer wrongAnswer = WrongAnswer.builder()
+                .testType(finishWordExamDto.getTestType())
+                .totalWords(finishWordExamDto.getTotalWords())
+                .wrongWords(finishWordExamDto.getWrongWords())
+                .time(finishWordExamDto.getTime())
+                .user(principalDetails.getUser())
                 .build();
 
-        wordStorageWrongAnswerRepository.save(wordStorageWrongAnswer);
-
-
-        // 4. Word 테이블에 저장
-        Word word = Word.builder()
-                .wordStorageId(newWordStorage.getId())
-                .words(finishWordExamDto.getCollectionWrongWord().getWord())
-                .meanings(finishWordExamDto.getCollectionWrongWord().getMeaning())
-                        .build();
-
-        wordRepository.save(word);
-
-
-        return null;
+        wrongAnswerRepository.save(wrongAnswer);
+        return wrongAnswer;
     }
 
     @Transactional
     public List<WrongAnswerMapping> getExamHistory(PrincipalDetails principalDetails) {
-        checkLoginStatus(principalDetails);
 
         return wrongAnswerRepository.customFindALl();
     }
 
 
-    public void checkLoginStatus(PrincipalDetails principalDetails){
-        if(principalDetails.getUser() == null){
-            throw new UserUnauthorizedException();
-        }
-
-    }
 }

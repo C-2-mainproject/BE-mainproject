@@ -62,8 +62,6 @@ public class PublicWordStorageService {
     @Transactional
     public WordStorageDetailResponseDto getPublicWordStorageDetails(Long id, PrincipalDetails principalDetails) {
 
-        checkLoginStatus(principalDetails);
-
         WordStorage wordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.PUBLIC.getType(), id)
                 .orElseThrow(WordStorageNotFoundException::new);
 
@@ -75,7 +73,6 @@ public class PublicWordStorageService {
 
     @Transactional
     public String likePublicWordStorage(Long id, PrincipalDetails principalDetails) {
-        checkLoginStatus(principalDetails);
 
         WordStorage likeWordStorage = wordStorageRepository.findByTypeAndId(WordStorageType.PUBLIC.getType(), id)
                 .orElseThrow(WordStorageNotFoundException::new);
@@ -102,12 +99,6 @@ public class PublicWordStorageService {
         return wordStorageRepository.countByCategory();
     }
 
-    public void checkLoginStatus(PrincipalDetails principalDetails){
-        if(principalDetails == null){
-            throw new UserUnauthorizedException();
-        }
-
-    }
 
 
 }

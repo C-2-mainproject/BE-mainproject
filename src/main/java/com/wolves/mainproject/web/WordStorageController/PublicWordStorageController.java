@@ -1,6 +1,7 @@
 package com.wolves.mainproject.web.WordStorageController;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
+import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.WordStorageService.PublicWordStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class PublicWordStorageController {
     }
 
     // 회원 공유 단어장 상세 조회
+    @AuthValidation
     @GetMapping("/api/wordstorage/public/{id}")
     public ResponseEntity<Object> getPublicWordStorageDetails(@PathVariable Long id,
                                                               @AuthenticationPrincipal PrincipalDetails principalDetails
@@ -47,6 +49,7 @@ public class PublicWordStorageController {
     }
 
     // 회원 공유 단어장 추천
+    @AuthValidation
     @PostMapping("/api/wordstorage/public/like/{id}")
     public ResponseEntity<String> likePublicWordStorage(@PathVariable Long id,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails

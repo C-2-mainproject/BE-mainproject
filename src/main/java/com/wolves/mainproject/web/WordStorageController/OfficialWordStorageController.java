@@ -57,6 +57,7 @@ public class OfficialWordStorageController {
     }
 
     // 공인 단어장 추천
+    @AuthValidation
     @PostMapping("/api/wordstorage/official/like/{id}")
     public ResponseEntity<String> likeOfficialWordStorage(@PathVariable Long id,
                                                           @AuthenticationPrincipal PrincipalDetails principalDetails
@@ -65,7 +66,8 @@ public class OfficialWordStorageController {
 
     }
 
-    // 내 단어장에 넣기 (public, official로 다른 사람이 만든 단어장을 private으로 내가 만든 단어장에 넣기)
+    // 내 단어장에 넣기
+    @AuthValidation
     @PostMapping("/api/wordstorage/save/id/{id}")
     public ResponseEntity<String> putInMyWordStorage(@PathVariable Long id,
                                                      @AuthenticationPrincipal PrincipalDetails principalDetails
