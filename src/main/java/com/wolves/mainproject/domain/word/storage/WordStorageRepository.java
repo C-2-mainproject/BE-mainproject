@@ -1,16 +1,18 @@
 package com.wolves.mainproject.domain.word.storage;
 
-import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
-import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import com.wolves.mainproject.domain.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 @Repository
 public interface WordStorageRepository extends JpaRepository<WordStorage, Long> {
-//    List<WordStorage> findByWordStorage(List<WordStorageLike> wordStorages);
-//
-//    List<WordStorage> findByWordStorageCategories(List<WordStorageCategory> wordStorageCategories);
+
+    Page<WordStorage> findAllByUser(User user, Pageable pageable);
+    List<WordStorage> findAllByTitleContainingOrDescriptionContainingAndUser(String title, String description, User user);
 
 }

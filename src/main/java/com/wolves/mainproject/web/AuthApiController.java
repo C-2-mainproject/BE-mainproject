@@ -1,6 +1,6 @@
 package com.wolves.mainproject.web;
 
-import com.wolves.mainproject.dto.request.RequestSignupDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestSignupDto;
 import com.wolves.mainproject.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
