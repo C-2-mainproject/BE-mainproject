@@ -67,6 +67,7 @@ public enum ErrorCode {
     WORD_STORAGE_TITLE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W102", "단어장 제목이 너무 깁니다."),
     WORD_STORAGE_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W103", "단어장 설명이 너무 깁니다."),
     WORD_STORAGE_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "W104", "존재하지 않는 단어장 타입입니다."),
+    WORD_STORAGE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "W105", "해당 단어장에 대한 권한이 없습니다."),
 
     // Category
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "C101", "존재하지 않는 카테고리명입니다."),
@@ -74,12 +75,15 @@ public enum ErrorCode {
     // Word
     WORD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W201", "단어(영)가 너무 깁니다."),
     WORD_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W202", "단어(영) 설명이 너무 깁니다."),
+    WORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "W203", "단어가 존재하지 않습니다."),
 
     // Meaning
     MEANING_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "M001", "단어(뜻)가 너무 깁니다."),
 
     // Pronounciation
-    PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다.");
+    PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다."),
+
+    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다.");
 
     private HttpStatus status;
     private String code;

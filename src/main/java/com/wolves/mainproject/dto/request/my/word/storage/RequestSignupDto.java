@@ -1,5 +1,6 @@
-package com.wolves.mainproject.dto.request;
+package com.wolves.mainproject.dto.request.my.word.storage;
 
+import com.wolves.mainproject.domain.game.history.GameHistory;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.type.RoleType;
 import lombok.*;
@@ -27,6 +28,12 @@ public class RequestSignupDto {
                 .ageGroup(ageGroup)
                 .gender(gender)
                 .role(RoleType.ROLE_USER)
+                .build();
+    }
+
+    public GameHistory toGameHistory(User user){
+        return GameHistory.builder()
+                .user(user)
                 .build();
     }
 }
