@@ -1,7 +1,7 @@
 package com.wolves.mainproject.domain.user;
 
 import com.wolves.mainproject.domain.common.Timestamped;
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

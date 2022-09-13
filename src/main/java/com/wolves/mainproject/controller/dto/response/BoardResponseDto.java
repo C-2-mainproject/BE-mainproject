@@ -1,6 +1,7 @@
-package com.wolves.mainproject.controller.dto;
+package com.wolves.mainproject.controller.dto.response;
 
 import com.wolves.mainproject.domain.board.Board;
+import com.wolves.mainproject.domain.board.content.BoardContent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +19,6 @@ public class BoardResponseDto {
     private int commentCount;
 
     public BoardResponseDto(Board board) {
+
     }
 }

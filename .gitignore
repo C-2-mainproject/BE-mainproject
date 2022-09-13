@@ -19,6 +19,8 @@ bin/
 
 ### Custom Ignore ###
 application-dev.yml
+application.yml
+application-prod.yml
 
 ### IntelliJ IDEA ###
 .idea

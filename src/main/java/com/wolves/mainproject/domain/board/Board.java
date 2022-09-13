@@ -1,8 +1,10 @@
 package com.wolves.mainproject.domain.board;
 
-import com.wolves.mainproject.controller.dto.BoardRequestDto;
+import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
+import com.wolves.mainproject.domain.board.like.BoardLike;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.service.LikeService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,12 +36,20 @@ public class Board extends Timestamped {
     @Column(nullable = false, name = "comment_count")
     private long commentCount;
 
-//    @JoinColumn(name = "user_id", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @ManyToOne
-//    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne
+    private User user;
+
 
     public void update(BoardRequestDto boardRequestDto){
         this.title = boardRequestDto.getTitle();
+    }
+    public void getLikeCount(long boardlike){
+        this.likeCount= boardlike;
+    }
+
+    public void getCommentCount(long commentCount){
+        this.commentCount= commentCount;
     }
 }

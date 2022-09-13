@@ -1,8 +1,19 @@
 package com.wolves.mainproject.service;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
+import com.wolves.mainproject.domain.board.Board;
+import com.wolves.mainproject.domain.board.like.BoardLike;
+import com.wolves.mainproject.domain.board.like.BoardLikeRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
+import com.wolves.mainproject.domain.user.advice.UserAdvice;
+import com.wolves.mainproject.domain.user.advice.UserAdviceRepository;
+import com.wolves.mainproject.domain.word.storage.WordStorage;
+import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
+import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
+import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.UserResponseDto;
 import com.wolves.mainproject.dto.request.PasswordDto;
 import com.wolves.mainproject.dto.request.UserDto;
@@ -15,7 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -24,6 +39,14 @@ public class MyPageService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final WordStorageLikeRepository wordStorageLikeRepository;
+
+    private final WordStorageRepository wordStorageRepository;
+
+    private final WordStorageCategoryRepository wordStorageCategoryRepository;
+
+    private final UserAdviceRepository userAdviceRepository;
 
     // 암호 입력을 통한 회원정보 조회
     @Transactional(readOnly = true)
@@ -113,6 +136,13 @@ public class MyPageService {
     public boolean checkPassword(PasswordDto requestDto,
                                  User user) {
         return passwordEncoder.matches(requestDto.getPassword(), user.getPassword());
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<UserAdvice> getUserQuestion(PrincipalDetails principalDetails) {
+        User user = principalDetails.getUser();
+        return userAdviceRepository.findByUser(user);
     }
 
 }

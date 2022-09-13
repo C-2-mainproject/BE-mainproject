@@ -3,7 +3,7 @@ package com.wolves.mainproject.handler.aop.type;
 import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
-import com.wolves.mainproject.role.RoleType;
+import com.wolves.mainproject.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
