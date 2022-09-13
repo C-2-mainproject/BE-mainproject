@@ -1,7 +1,6 @@
 package com.wolves.mainproject.service;
 
-import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.controller.dto.request.BoardCommentRequestDto;
+import com.wolves.mainproject.dto.request.board.BoardCommentRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.BoardRepository;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
@@ -10,7 +9,6 @@ import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.exception.board.BoardCommentNotFoundException;
 import com.wolves.mainproject.exception.board.BoardCommentTooLargeException;
 import com.wolves.mainproject.exception.board.BoardCommentUnauthorizedException;
-import com.wolves.mainproject.exception.board.BoardUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.wolves.mainproject.service;
 
-import com.wolves.mainproject.controller.dto.GetBoard;
-import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
+import com.wolves.mainproject.dto.request.board.GetBoard;
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.BoardRepository;
 import com.wolves.mainproject.domain.board.comment.BoardCommentRepository;

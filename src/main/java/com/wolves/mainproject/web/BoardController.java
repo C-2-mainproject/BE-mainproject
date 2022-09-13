@@ -1,8 +1,8 @@
-package com.wolves.mainproject.controller;
+package com.wolves.mainproject.web;
 
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.BoardService;
 import lombok.RequiredArgsConstructor;

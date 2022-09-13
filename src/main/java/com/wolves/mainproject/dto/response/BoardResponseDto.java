@@ -1,4 +1,4 @@
-package com.wolves.mainproject.controller.dto.response;
+package com.wolves.mainproject.dto.response;
 
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.content.BoardContent;

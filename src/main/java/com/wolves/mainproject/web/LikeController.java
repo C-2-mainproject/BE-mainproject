@@ -1,4 +1,4 @@
-package com.wolves.mainproject.controller;
+package com.wolves.mainproject.web;
 
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;

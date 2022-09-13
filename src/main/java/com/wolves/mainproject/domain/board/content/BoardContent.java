@@ -1,6 +1,6 @@
 package com.wolves.mainproject.domain.board.content;
 
-import com.wolves.mainproject.controller.dto.request.BoardRequestDto;
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.common.Timestamped;
 import lombok.AllArgsConstructor;
