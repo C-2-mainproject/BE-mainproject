@@ -6,6 +6,7 @@ import com.wolves.mainproject.dto.request.UserDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyPageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,11 @@ public class MyPageController {
     public ResponseEntity<?> deleteUser(@RequestBody PasswordDto requestDto,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
         return myPageService.deleteUser(requestDto, principalDetails);
+    }
+
+    @AuthValidation
+    @GetMapping("/api/user/question")
+    public ResponseEntity<?> getUserQuestion(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(myPageService.getUserQuestion(principalDetails), HttpStatus.OK);
     }
 }

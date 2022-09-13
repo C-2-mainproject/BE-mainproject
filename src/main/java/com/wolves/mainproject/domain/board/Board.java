@@ -1,5 +1,6 @@
 package com.wolves.mainproject.domain.board;
 
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -37,4 +38,16 @@ public class Board extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User user;
+
+
+    public void update(BoardRequestDto boardRequestDto){
+        this.title = boardRequestDto.getTitle();
+    }
+    public void getLikeCount(long boardlike){
+        this.likeCount= boardlike;
+    }
+
+    public void getCommentCount(long commentCount){
+        this.commentCount= commentCount;
+    }
 }

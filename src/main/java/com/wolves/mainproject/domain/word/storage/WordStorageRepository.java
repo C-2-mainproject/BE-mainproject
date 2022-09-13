@@ -1,5 +1,8 @@
 package com.wolves.mainproject.domain.word.storage;
 
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.word.storage.category.CategoryStatisticMapping;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
@@ -7,13 +10,12 @@ import com.wolves.mainproject.type.StatusType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface WordStorageRepository extends JpaRepository<WordStorage, Long> {
+
     boolean existsByUserAndOriginalWordStorage(User user, WordStorage originalWordStorage);
 
     Page<WordStorage> findAllByUser(User user, Pageable pageable);
@@ -32,9 +34,4 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
             "on word_storage_category.id = word_storage.category_id " +
             "GROUP BY word_storage_category.name", nativeQuery = true)
     List<CategoryStatisticMapping> countByCategory();
-
-
-
-
-
 }
