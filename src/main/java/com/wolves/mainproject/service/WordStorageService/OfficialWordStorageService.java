@@ -11,18 +11,22 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
-import com.wolves.mainproject.dto.WordStorageDto.response.WordInfoDto;
-import com.wolves.mainproject.dto.WordStorageDto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordInfoDto;
+import com.wolves.mainproject.dto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordStorageResponseDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
+import com.wolves.mainproject.service.MyWordStorageService;
 import com.wolves.mainproject.type.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,29 +37,43 @@ public class OfficialWordStorageService {
     private final WordStorageCategoryRepository wordStorageCategoryRepository;
     private final WordStorageLikeRepository wordStorageLikeRepository;
     private final WordRepository wordRepository;
+    private final MyWordStorageService myWordStorageService;
 
     @Transactional
-    public List<WordStorageMapping> getOfficialWordStorageOrderByLike(int page) {
+    public List<WordStorageResponseDto> getOfficialWordStorageOrderByLike(int page,
+                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
+
+        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
     }
 
+
     @Transactional
-    public List<WordStorageMapping> getOfficialWordStorageByCategory(String category, int page) {
+    public List<WordStorageResponseDto> getOfficialWordStorageByCategory(String category, int page,
+                                                                     @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(category)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        return wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.OFFICIAL, searchCategory, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.OFFICIAL, searchCategory, pageRequest);
+
+        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
     }
 
     @Transactional
-    public List<WordStorageMapping> getOfficialWordStorageByTitle(String search, int page) {
+    public List<WordStorageResponseDto> getOfficialWordStorageByTitle(String search, int page,
+                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByStatusAndTitleContaining(StatusType.OFFICIAL, search, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndTitleContaining(StatusType.OFFICIAL, search, pageRequest);
+
+        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
     }
 
     @Transactional
@@ -96,13 +114,13 @@ public class OfficialWordStorageService {
     public String putInMyWordStorage(Long id, PrincipalDetails principalDetails) {
         long newWordStorageId = saveWordStorage(id, principalDetails);
 
-        saveWord(newWordStorageId);
+        saveWord(id, newWordStorageId);
 
         return null;
     }
 
-    private void saveWord(long newWordStorageId) {
-        Word word = wordRepository.findById(newWordStorageId)
+    private void saveWord(long id, long newWordStorageId) {
+        Word word = wordRepository.findById(id)
                 .orElseThrow(WordNotFoundException::new);
 
         word.setWordStorageId(newWordStorageId);

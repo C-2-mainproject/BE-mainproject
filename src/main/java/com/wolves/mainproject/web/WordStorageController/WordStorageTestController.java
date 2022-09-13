@@ -2,9 +2,9 @@ package com.wolves.mainproject.web.WordStorageController;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.domain.word.storage.answer.WrongAnswerMapping;
-import com.wolves.mainproject.dto.WordStorageDto.requset.FinishWordExamRequestDto;
-import com.wolves.mainproject.dto.WordStorageDto.requset.WordExamRequestDto;
-import com.wolves.mainproject.dto.WordStorageDto.response.FinishWordExamResponseDto;
+import com.wolves.mainproject.dto.request.exam.FinishWordExamRequestDto;
+import com.wolves.mainproject.dto.request.exam.WordExamRequestDto;
+import com.wolves.mainproject.dto.response.exam.FinishWordExamResponseDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.WordStorageService.WordStorageTestService;
 import lombok.RequiredArgsConstructor;

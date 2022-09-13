@@ -23,7 +23,7 @@ public class OfficialWordStorageController {
                                                                     @RequestParam int page
 
     ){
-        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageOrderByLike(page));
+        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageOrderByLike(page, principalDetails));
     }
 
     // 공인 단어장 카테고리로 검색 (search)
@@ -32,7 +32,7 @@ public class OfficialWordStorageController {
                                                                    @RequestParam String search,
                                                                    @RequestParam int page
     ){
-        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageByCategory(search, page));
+        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageByCategory(search, page, principalDetails));
 
     }
 
@@ -42,7 +42,7 @@ public class OfficialWordStorageController {
                                                                 @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                 @RequestParam int page
     ){
-        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageByTitle(search, page));
+        return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageByTitle(search, page, principalDetails));
 
     }
 
@@ -75,10 +75,5 @@ public class OfficialWordStorageController {
         return ResponseEntity.ok(officialWordStorageService.putInMyWordStorage(id, principalDetails));
 
     }
-
-
-// 내 단어장에서 단어나 단어장 뿌려줬을 떄 무한스크롤 진행.
-// 마이페이지는 페이지네이션
-// 메인 페이지는 페이지네이션
 
 }

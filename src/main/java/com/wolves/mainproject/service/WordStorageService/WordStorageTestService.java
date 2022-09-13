@@ -11,9 +11,9 @@ import com.wolves.mainproject.domain.word.storage.answer.WordStorageWrongAnswerR
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswer;
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswerRepository;
-import com.wolves.mainproject.dto.WordStorageDto.requset.FinishWordExamRequestDto;
-import com.wolves.mainproject.dto.WordStorageDto.requset.WordExamRequestDto;
-import com.wolves.mainproject.dto.WordStorageDto.response.FinishWordExamResponseDto;
+import com.wolves.mainproject.dto.request.exam.FinishWordExamRequestDto;
+import com.wolves.mainproject.dto.request.exam.WordExamRequestDto;
+import com.wolves.mainproject.dto.response.exam.FinishWordExamResponseDto;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.type.StatusType;

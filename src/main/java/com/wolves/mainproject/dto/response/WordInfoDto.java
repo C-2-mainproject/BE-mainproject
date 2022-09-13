@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.WordStorageDto.response;
+package com.wolves.mainproject.dto.response;
 
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import lombok.AllArgsConstructor;

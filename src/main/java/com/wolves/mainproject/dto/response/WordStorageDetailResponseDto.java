@@ -1,7 +1,6 @@
-package com.wolves.mainproject.dto.WordStorageDto.response;
+package com.wolves.mainproject.dto.response;
 
 import com.wolves.mainproject.domain.word.storage.WordStorage;
-import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

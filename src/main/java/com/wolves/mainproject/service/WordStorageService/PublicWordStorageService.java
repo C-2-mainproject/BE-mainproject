@@ -11,15 +11,18 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
-import com.wolves.mainproject.dto.WordStorageDto.response.WordInfoDto;
-import com.wolves.mainproject.dto.WordStorageDto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordInfoDto;
+import com.wolves.mainproject.dto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordStorageResponseDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
+import com.wolves.mainproject.service.MyWordStorageService;
 import com.wolves.mainproject.type.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,29 +36,40 @@ public class PublicWordStorageService {
     private final WordStorageCategoryRepository wordStorageCategoryRepository;
     private final WordStorageLikeRepository wordStorageLikeRepository;
     private final WordRepository wordRepository;
+    private final MyWordStorageService wordStorageService;
 
     @Transactional
-    public List<WordStorageMapping> getPublicWordStorageOrderByLikes(int page) {
+    public List<WordStorageResponseDto> getPublicWordStorageOrderByLikes(int page, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
+
+        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
 
     }
 
     @Transactional
-    public List<WordStorageMapping> getPublicWordStorageByCategory(String search, int page) {
+    public List<WordStorageResponseDto> getPublicWordStorageByCategory(String search, int page,
+                                                                   @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(search)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        return wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.PUBLIC, searchCategory, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.PUBLIC, searchCategory, pageRequest);
+
+        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
     }
 
     @Transactional
-    public List<WordStorageMapping> getPublicWordStorageByTitle(String search, int page) {
+    public List<WordStorageResponseDto> getPublicWordStorageByTitle(String search, int page,
+                                                                    @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
-        return wordStorageRepository.findByStatusAndTitleContaining(StatusType.PUBLIC, search, pageRequest);
+        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndTitleContaining(StatusType.PUBLIC, search, pageRequest);
+
+        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
     }
 
     @Transactional

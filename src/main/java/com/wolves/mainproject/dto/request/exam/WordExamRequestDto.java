@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.WordStorageDto.requset;
+package com.wolves.mainproject.dto.request.exam;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

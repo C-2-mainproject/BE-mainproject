@@ -1,4 +1,4 @@
-package com.wolves.mainproject.dto.WordStorageDto.response;
+package com.wolves.mainproject.dto.response.exam;
 
 import lombok.Getter;
 import lombok.Setter;

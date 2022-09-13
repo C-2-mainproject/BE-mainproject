@@ -1,12 +1,10 @@
-package com.wolves.mainproject.dto.WordStorageDto.requset;
+package com.wolves.mainproject.dto.request.exam;
 
-import com.wolves.mainproject.dto.WordStorageDto.response.WordInfoDto;
+import com.wolves.mainproject.dto.response.WordInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
