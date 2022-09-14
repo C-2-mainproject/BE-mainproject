@@ -50,4 +50,9 @@ public class BoardComment extends Timestamped {
     public void delete() {
         this.status = false;
     }
+
+//    public void replyupdate(BoardComment boardComment, BoardCommentRequestDto boardCommentRequestDto){
+//        this.content = boardCommentRequestDto.getContent();
+//        this.refer = boardComment;
+//    }
 }

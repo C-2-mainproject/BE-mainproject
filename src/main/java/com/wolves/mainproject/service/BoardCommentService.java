@@ -6,6 +6,7 @@ import com.wolves.mainproject.domain.board.BoardRepository;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
 import com.wolves.mainproject.domain.board.comment.BoardCommentRepository;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.dto.response.BoardCommentResponseDto;
 import com.wolves.mainproject.exception.board.BoardCommentNotFoundException;
 import com.wolves.mainproject.exception.board.BoardCommentTooLargeException;
 import com.wolves.mainproject.exception.board.BoardCommentUnauthorizedException;
@@ -22,20 +23,20 @@ public class BoardCommentService {
     private final BoardCommentRepository boardCommentRepository;
 
     @Transactional
-    public BoardComment createComment(User user, long board_id, BoardCommentRequestDto boardCommentRequestDto) {
+    public BoardCommentResponseDto createComment(User user, long board_id, BoardCommentRequestDto boardCommentRequestDto) {
         if(boardCommentRequestDto.getContent().length()>255){
             throw new BoardCommentTooLargeException();
         }
         Board board = boardRepository.findById(board_id).orElseThrow();
         BoardComment boardComment = BoardComment.builder().board(board).status(true).user(user).refer(null).content(boardCommentRequestDto.getContent()).build();
         boardCommentRepository.save(boardComment);
-        long commentCount = boardCommentRepository.findByBoard(board).size();
+        long commentCount = boardCommentRepository.findByBoardId(board_id).size();
         board.getCommentCount(commentCount);
-        return  boardComment;
+        return new BoardCommentResponseDto(boardComment.getId(), boardComment.getContent());
     }
 
     @Transactional
-    public BoardComment updateComment(User user, long comment_id, BoardCommentRequestDto boardCommentRequestDto) {
+    public void updateComment(User user, long comment_id, BoardCommentRequestDto boardCommentRequestDto) {
         if(boardCommentRequestDto.getContent().length()>255){
             throw new BoardCommentTooLargeException();
         }
@@ -44,7 +45,7 @@ public class BoardCommentService {
             throw new BoardCommentUnauthorizedException();
         }
         boardComment.update(boardCommentRequestDto);
-        return boardComment;
+
     }
 
     @Transactional
@@ -58,18 +59,15 @@ public class BoardCommentService {
     }
 
     @Transactional
-    public BoardComment replyComment(User user, long board_id, BoardComment comment_id, BoardCommentRequestDto boardCommentRequestDto){
+    public BoardCommentResponseDto replyComment(User user, long board_id, BoardComment comment_id, BoardCommentRequestDto boardCommentRequestDto){
         if(boardCommentRequestDto.getContent().length()>255){
             throw new BoardCommentTooLargeException();
         }
         Board board = boardRepository.findById(board_id).orElseThrow();
         BoardComment boardComment = BoardComment.builder().board(board).status(true).user(user).refer(comment_id).content(boardCommentRequestDto.getContent()).build();
         boardCommentRepository.save(boardComment);
-        long commentCount = boardCommentRepository.findByBoard(board).size();
+        long commentCount = boardCommentRepository.findByBoardId(board_id).size();
         board.getCommentCount(commentCount);
-        return  boardComment;
-
+        return new BoardCommentResponseDto(boardComment.getId(),boardComment.getContent());
     }
-
-
 }

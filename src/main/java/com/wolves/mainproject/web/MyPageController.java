@@ -3,6 +3,7 @@ package com.wolves.mainproject.web;
 import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.PasswordDto;
 import com.wolves.mainproject.dto.request.UserDto;
+import com.wolves.mainproject.handler.aop.annotation.AdminValidation;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +50,12 @@ public class MyPageController {
     @GetMapping("/api/user/question")
     public ResponseEntity<?> getUserQuestion(@AuthenticationPrincipal PrincipalDetails principalDetails){
         return new ResponseEntity<>(myPageService.getUserQuestion(principalDetails), HttpStatus.OK);
+    }
+
+
+    @AdminValidation
+    @GetMapping("/api/admin/question")
+    public ResponseEntity<?> getAdminQuestion(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(myPageService.getAdminQuestion(principalDetails), HttpStatus.OK);
     }
 }

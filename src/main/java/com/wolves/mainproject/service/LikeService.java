@@ -34,7 +34,7 @@ public class LikeService {
         }
 
         long boardLike = boardLikeRepository.findByBoard(board).size();
-        board.getLikeCount(boardLike);
+        board.bringLikeCount(boardLike);
 
     }
 

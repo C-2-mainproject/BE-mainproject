@@ -43,10 +43,10 @@ public class Board extends Timestamped {
     public void update(BoardRequestDto boardRequestDto){
         this.title = boardRequestDto.getTitle();
     }
-    public void getLikeCount(long boardlike){
-        this.likeCount= boardlike;
-    }
 
+    public void bringLikeCount(long boardlike){
+        this.likeCount = boardlike;
+    }
     public void getCommentCount(long commentCount){
         this.commentCount= commentCount;
     }
