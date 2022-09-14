@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class GetBoardDto {
-    private boolean is_notice;
+    private boolean isNotice;
     private String title;
     private long likeCount;
     private long commentCount;
@@ -24,7 +24,7 @@ public class GetBoardDto {
     private String content;
 
     public void fromBoard(Board board){
-        this.is_notice = board.isNotice();
+        this.isNotice = board.isNotice();
         this.title = board.getTitle();
         this.likeCount = board.getLikeCount();
         this.commentCount = board.getCommentCount();

@@ -3,6 +3,7 @@ package com.wolves.mainproject.dto.response;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
 import com.wolves.mainproject.domain.board.content.BoardContent;
+import com.wolves.mainproject.domain.board.like.BoardLike;
 import com.wolves.mainproject.domain.user.User;
 import lombok.*;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 public class BoardResponseDto {
 
-    private boolean is_notice;
+    private boolean isNotice;
     private String title;
     private long likeCount;
     private long commentCount;
@@ -27,7 +28,7 @@ public class BoardResponseDto {
     private List<GetBoardResponseDto> comments;
 
     public void fromBoard(Board board) {
-        this.is_notice = board.isNotice();
+        this.isNotice = board.isNotice();
         this.title = board.getTitle();
         this.likeCount = board.getLikeCount();
         this.commentCount = board.getCommentCount();

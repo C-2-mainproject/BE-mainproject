@@ -2,6 +2,7 @@ package com.wolves.mainproject.service;
 
 import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
+import com.wolves.mainproject.domain.board.like.BoardLike;
 import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.BoardRepository;
@@ -34,28 +35,30 @@ public class BoardService {
 
     private final BoardCommentRepository boardCommentRepository;
 
+    private final BoardLikeRepository boardLikeRepository;
+
 
     @Transactional(readOnly = true)
-    public List<ViewBoard> getBoardAll() {
+    public List<ViewBoardDto> getBoardAll() {
         List<Board> boards = boardRepository.findAll();
-        return boards.stream().map(board -> new ViewBoard(board)).toList();
+        return boards.stream().map(board -> new ViewBoardDto(board)).toList();
     }
 
 
     @Transactional(readOnly = true)
-    public List<ViewBoard> searchBoard(String search) {
+    public List<ViewBoardDto> searchBoard(String search) {
         List<Board> boards = boardRepository.findByTitleContaining(search);
-        return boards.stream().map(board -> new ViewBoard(board)).toList();
+        return boards.stream().map(board -> new ViewBoardDto(board)).toList();
     }
 
     @Transactional
     public BoardResponseDto getBoardById(long board_id) {
-        Board board = boardRepository.findById(board_id).orElseThrow(()-> new BoardPageNotFoundException());
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
         BoardContent boardContent = boardContentRepository.findById(board_id).orElseThrow();
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
         List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
         return BoardResponseDto.builder()
-                .is_notice(board.isNotice())
+                .isNotice(board.isNotice())
                 .title(board.getTitle())
                 .likeCount(board.getLikeCount())
                 .commentCount(board.getCommentCount())
@@ -66,20 +69,31 @@ public class BoardService {
     }
 
 
-
-
     @Transactional
     public GetBoardDto creatBoard(User user, BoardRequestDto boardRequestDto) {
-        if(boardRequestDto.getTitle().length()>40){
+        if (boardRequestDto.getTitle().length() > 40) {
             throw new BoardTitleTooLargeException();
         }
-        if(user.getRole().equals(RoleType.ROLE_ADMIN)){
+        if (user.getRole().equals(RoleType.ROLE_ADMIN)) {
             Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
             boardRepository.save(board);
             BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
             boardContentRepository.save(boardContent);
             return GetBoardDto.builder()
-                    .is_notice(true)
+                    .isNotice(true)
+                    .title(board.getTitle())
+                    .likeCount(board.getLikeCount())
+                    .commentCount(board.getCommentCount())
+                    .content(boardContent.getContent())
+                    .createAt(board.getCreateAt())
+                    .build();
+        } else {
+            Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
+            boardRepository.save(board);
+            BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
+            boardContentRepository.save(boardContent);
+            return GetBoardDto.builder()
+                    .isNotice(board.isNotice())
                     .title(board.getTitle())
                     .likeCount(board.getLikeCount())
                     .commentCount(board.getCommentCount())
@@ -87,30 +101,16 @@ public class BoardService {
                     .createAt(board.getCreateAt())
                     .build();
         }
-        else {
-        Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
-        boardRepository.save(board);
-        BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
-        boardContentRepository.save(boardContent);
-        return GetBoardDto.builder()
-                .is_notice(board.isNotice())
-                .title(board.getTitle())
-                .likeCount(board.getLikeCount())
-                .commentCount(board.getCommentCount())
-                .content(boardContent.getContent())
-                .createAt(board.getCreateAt())
-                .build();
-        }
 
     }
 
     @Transactional
     public BoardResponseDto updateBoard(User user, long board_id, BoardRequestDto boardRequestDto) {
-        if(boardRequestDto.getTitle().length()>40){
+        if (boardRequestDto.getTitle().length() > 40) {
             throw new BoardTitleTooLargeException();
         }
-        Board board = boardRepository.findById(board_id).orElseThrow(()-> new BoardPageNotFoundException());
-        if(!user.getUsername().equals(board.getUser().getUsername())){
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
+        if (!user.getUsername().equals(board.getUser().getUsername())) {
             throw new BoardUnauthorizedException();
         }
         board.update(boardRequestDto);
@@ -120,7 +120,7 @@ public class BoardService {
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
         List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
         return BoardResponseDto.builder()
-                .is_notice(board.isNotice())
+                .isNotice(board.isNotice())
                 .title(board.getTitle())
                 .likeCount(board.getLikeCount())
                 .commentCount(board.getCommentCount())
@@ -132,8 +132,8 @@ public class BoardService {
 
     @Transactional
     public void deletedBoard(User user, long board_id) {
-        Board board = boardRepository.findById(board_id).orElseThrow(()-> new BoardPageNotFoundException());
-        if(!user.getUsername().equals(board.getUser().getUsername())){
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
+        if (!user.getUsername().equals(board.getUser().getUsername())) {
             throw new BoardUnauthorizedException();
         }
         boardRepository.delete(board);

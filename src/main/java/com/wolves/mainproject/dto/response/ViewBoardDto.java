@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class ViewBoard {
+public class ViewBoardDto {
     private long id;
-    private boolean is_notice;
+    private boolean isNotice;
     private String title;
     private long likeCount;
     private long commentCount;
@@ -22,7 +22,7 @@ public class ViewBoard {
 
     public void fromBoard(Board board){
         this.id = board.getId();
-        this.is_notice = board.isNotice();
+        this.isNotice = board.isNotice();
         this.title = board.getTitle();
         this.likeCount = board.getLikeCount();
         this.commentCount = board.getCommentCount();
@@ -30,7 +30,7 @@ public class ViewBoard {
 
     }
 
-    public ViewBoard(Board board) {
+    public ViewBoardDto(Board board) {
         fromBoard(board);
     }
 }
