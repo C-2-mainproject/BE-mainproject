@@ -48,5 +48,4 @@ public class User extends Timestamped implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private RoleType role;
-
 }

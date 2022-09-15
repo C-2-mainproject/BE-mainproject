@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "C003", "페이지를 찾을 수 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "C004", "접속이 거부되었습니다."),
     REQUEST_DENIED(HttpStatus.NOT_ACCEPTABLE, "C005", "허용되지 않은 IP입니다."),
+    SQL_CONFLICT(HttpStatus.CONFLICT, "C006", "중복된 값이 존재합니다."),
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U001", "해당 유저가 존재하지 않습니다."),
@@ -31,6 +32,10 @@ public enum ErrorCode {
     EMAIL_CONFLICT(HttpStatus.CONFLICT, "R001", "이미 존재하는 이메일입니다."),
     NICKNAME_CONFLICT(HttpStatus.CONFLICT, "R002", "이미 존재하는 닉네임입니다."),
     FORM_NOT_VALID(HttpStatus.BAD_REQUEST, "R003", "형식이 올바르지 않습니다."),
+
+    NICKNAME_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R004", "닉네임 길이가 너무 깁니다."),
+    EMAIL_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R005", "이메일 길이가 너무 깁니다."),
+    GENDER_CONFLICT(HttpStatus.CONFLICT, "R006", "성별 형식이 올바르지 않습니다."),
 
     // Board
     BOARD_PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 게시글을 찾을 수 없습니다."),

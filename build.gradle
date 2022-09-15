@@ -34,6 +34,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.7.3'
     implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.0.4'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
