@@ -26,7 +26,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +40,7 @@ public class OfficialWordStorageService {
 
     @Transactional
     public List<WordStorageResponseDto> getOfficialWordStorageOrderByLike(int page,
-                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails
+                                                                          @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
@@ -53,7 +52,7 @@ public class OfficialWordStorageService {
 
     @Transactional
     public List<WordStorageResponseDto> getOfficialWordStorageByCategory(String category, int page,
-                                                                     @AuthenticationPrincipal PrincipalDetails principalDetails
+                                                                         @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
 
@@ -89,8 +88,8 @@ public class OfficialWordStorageService {
     }
 
     @Transactional
-    public String likeOfficialWordStorage(Long id, PrincipalDetails principalDetails) {
-        WordStorage likeWordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL,id)
+    public String likeWordStorage(Long id, PrincipalDetails principalDetails) {
+        WordStorage likeWordStorage = wordStorageRepository.findById(id)
                 .orElseThrow(WordStorageNotFoundException::new);
         WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
 

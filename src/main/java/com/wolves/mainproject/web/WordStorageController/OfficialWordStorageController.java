@@ -1,9 +1,7 @@
 package com.wolves.mainproject.web.WordStorageController;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
-import com.wolves.mainproject.service.WordService;
 import com.wolves.mainproject.service.WordStorageService.OfficialWordStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -56,13 +54,13 @@ public class OfficialWordStorageController {
 
     }
 
-    // 공인 단어장 추천
+    // 단어장 추천
     @AuthValidation
-    @PostMapping("/api/wordstorage/official/like/{id}")
+    @PostMapping("/api/wordstorage/like/{id}")
     public ResponseEntity<String> likeOfficialWordStorage(@PathVariable Long id,
                                                           @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        return ResponseEntity.ok(officialWordStorageService.likeOfficialWordStorage(id, principalDetails));
+        return ResponseEntity.ok(officialWordStorageService.likeWordStorage(id, principalDetails));
 
     }
 
