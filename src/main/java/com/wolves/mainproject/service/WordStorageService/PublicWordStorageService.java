@@ -84,28 +84,6 @@ public class PublicWordStorageService {
         return new WordStorageDetailResponseDto(new WordInfoDto(wordList), wordStorage);
     }
 
-    @Transactional
-    public String likePublicWordStorage(Long id, PrincipalDetails principalDetails) {
-
-        WordStorage likeWordStorage = wordStorageRepository.findByStatusAndId(StatusType.PUBLIC, id)
-                .orElseThrow(WordStorageNotFoundException::new);
-        WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
-
-        if(wordStorageLike == null){
-            likeWordStorage.update(likeWordStorage.getLikeCount() + 1);
-
-            WordStorageLike newWordStorageLike = new WordStorageLike(principalDetails.getUser(), likeWordStorage);
-            wordStorageLikeRepository.save(newWordStorageLike);
-
-            return null;
-        }
-
-        likeWordStorage.update(likeWordStorage.getLikeCount() - 1);
-        wordStorageLikeRepository.deleteByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
-
-        return null;
-
-    }
 
     @Transactional
     public List<CategoryStatisticMapping> getWordStorageStatistics() {

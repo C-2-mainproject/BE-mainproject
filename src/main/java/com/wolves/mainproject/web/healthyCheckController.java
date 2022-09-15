@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class healthyCheckController {
 
 
-    @GetMapping("/")
+    @GetMapping("/healthyCheck")
     public ResponseEntity<Object> awsHealthyCheck(){
         return ResponseEntity.ok("awsHealthyCheck - ok");
     }
