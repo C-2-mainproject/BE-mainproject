@@ -41,9 +41,8 @@ public class AuthApiController {
         return new ResponseEntity<>(authService.checkNickname(dto), HttpStatus.OK);
     }
 
-    @AuthValidation
     @GetMapping("/")
-    public ResponseEntity<Void> login(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ResponseEntity<Void> login(){
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
