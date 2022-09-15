@@ -13,6 +13,8 @@ public class GlobalExceptionHandler {
     // 기본 Exception 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleApiRequestException(Exception ex) {
+        if (ex.getMessage().contains("SQL"))
+            return new ResponseEntity<>(new ErrorResponse(ErrorCode.SQL_CONFLICT), HttpStatus.CONFLICT);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
     }
