@@ -2,6 +2,8 @@ package com.wolves.mainproject.dto.request.my.word.storage;
 
 import com.wolves.mainproject.domain.game.history.GameHistory;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.exception.ErrorCode;
+import com.wolves.mainproject.handler.aop.annotation.domain.LengthValidation;
 import com.wolves.mainproject.type.RoleType;
 import lombok.*;
 
@@ -12,8 +14,10 @@ import lombok.*;
 @Builder
 @ToString
 public class RequestSignupDto {
+    @LengthValidation(length = 100, exception = ErrorCode.EMAIL_TOO_LARGE)
     private String username;
     private String password;
+    @LengthValidation(length = 30, exception = ErrorCode.NICKNAME_TOO_LARGE)
     private String nickname;
     private String profileImage;
     private int ageGroup;

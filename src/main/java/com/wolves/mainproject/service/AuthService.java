@@ -3,6 +3,8 @@ package com.wolves.mainproject.service;
 import com.wolves.mainproject.domain.game.history.GameHistoryRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestCheckEmailDto;
+import com.wolves.mainproject.dto.request.my.word.storage.RequestCheckNicknameDto;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestSignupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,5 +25,15 @@ public class AuthService {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User userPS = userRepository.save(dto.toUser());
         gameHistoryRepository.save(dto.toGameHistory(userPS));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkEmail(RequestCheckEmailDto dto){
+        return userRepository.existsByUsername(dto.getUsername());
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkNickname(RequestCheckNicknameDto dto){
+        return userRepository.existsByNickname(dto.getNickname());
     }
 }

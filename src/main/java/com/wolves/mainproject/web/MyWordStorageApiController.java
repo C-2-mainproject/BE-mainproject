@@ -17,8 +17,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class MyWordStorageApiController {
 
     @AuthValidation
     @PostMapping("/api/user/wordstorage")
-    public ResponseEntity<Void> createWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody RequestMyWordStorageDto dto){
+    public ResponseEntity<Void> createWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid RequestMyWordStorageDto dto, BindingResult bindingResult){
         myWordStorageService.insertWordStorage(principalDetails.getUser(), dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
