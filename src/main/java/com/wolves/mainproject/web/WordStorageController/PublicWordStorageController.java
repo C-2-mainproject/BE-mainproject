@@ -52,15 +52,6 @@ public class PublicWordStorageController {
 
     }
 
-    // 회원 공유 단어장 추천
-    @AuthValidation
-    @PostMapping("/api/wordstorage/public/like/{id}")
-    public ResponseEntity<String> likePublicWordStorage(@PathVariable Long id,
-                                                        @AuthenticationPrincipal PrincipalDetails principalDetails
-    ){
-        return ResponseEntity.ok(publicWordStorageService.likePublicWordStorage(id, principalDetails));
-
-    }
 
     // 단어장 통계 조회
     @GetMapping("/api/wordstorage/statistic")
