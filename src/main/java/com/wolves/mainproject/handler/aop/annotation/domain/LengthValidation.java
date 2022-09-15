@@ -6,10 +6,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Constraint(validatedBy = EntityValidator.class)
+@Constraint(validatedBy = LengthValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EntityValidation {
+public @interface LengthValidation {
     String message() default "";
 
     long length() default 0;
