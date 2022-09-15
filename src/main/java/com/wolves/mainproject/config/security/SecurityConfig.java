@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(principalOAuth2UserService)
                 .and()
-                .defaultSuccessUrl("/")
                 .and()
                 .build();
     }

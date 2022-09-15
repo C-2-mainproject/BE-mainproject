@@ -29,6 +29,10 @@ public class SessionAuthenticationFilter extends UsernamePasswordAuthenticationF
             User user = om.readValue(request.getInputStream(), User.class);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                response.addCookie(cookie);
+            }
             return authenticationManager.authenticate(token);
 
         } catch (IOException e) {
