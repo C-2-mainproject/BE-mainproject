@@ -26,6 +26,7 @@ public class BoardController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchBoard(@RequestBody BoardRequestDto boardRequestDto){
+
         return new ResponseEntity<>(boardService.searchBoard(boardRequestDto),  HttpStatus.OK);
     }
 
