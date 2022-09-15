@@ -56,4 +56,9 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @AuthValidation
+    @GetMapping("/user/like")
+    public  ResponseEntity<?> getLikeBoard(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(boardService.getLikeBoard(principalDetails.getUser()),HttpStatus.OK);
+    }
 }

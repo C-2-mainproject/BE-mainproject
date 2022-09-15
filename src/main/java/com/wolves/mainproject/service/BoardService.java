@@ -71,37 +71,13 @@ public class BoardService {
 
     @Transactional
     public GetBoardDto creatBoard(User user, BoardRequestDto boardRequestDto) {
-        if (boardRequestDto.getTitle().length() > 40) {
+        if (boardRequestDto.getTitle().length() > 40)
             throw new BoardTitleTooLargeException();
-        }
-        if (user.getRole().equals(RoleType.ROLE_ADMIN)) {
-            Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
-            boardRepository.save(board);
-            BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
-            boardContentRepository.save(boardContent);
-            return GetBoardDto.builder()
-                    .isNotice(true)
-                    .title(board.getTitle())
-                    .likeCount(board.getLikeCount())
-                    .commentCount(board.getCommentCount())
-                    .content(boardContent.getContent())
-                    .createAt(board.getCreateAt())
-                    .build();
-        } else {
-            Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
-            boardRepository.save(board);
-            BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
-            boardContentRepository.save(boardContent);
-            return GetBoardDto.builder()
-                    .isNotice(board.isNotice())
-                    .title(board.getTitle())
-                    .likeCount(board.getLikeCount())
-                    .commentCount(board.getCommentCount())
-                    .content(boardContent.getContent())
-                    .createAt(board.getCreateAt())
-                    .build();
-        }
-
+        Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
+        boardRepository.save(board);
+        BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
+        boardContentRepository.save(boardContent);
+        return new GetBoardDto(user, board, boardContent);
     }
 
     @Transactional
@@ -137,6 +113,13 @@ public class BoardService {
             throw new BoardUnauthorizedException();
         }
         boardRepository.delete(board);
+    }
+
+    @Transactional
+    public List<ViewBoardDto> getLikeBoard(User user) {
+        List<BoardLike> boardlikes = boardLikeRepository.findByUser(user);
+        List<ViewBoardDto> boards = boardlikes.stream().map(boardLike -> new ViewBoardDto(boardLike.getBoard())).collect(Collectors.toList());
+        return boards;
     }
 }
 

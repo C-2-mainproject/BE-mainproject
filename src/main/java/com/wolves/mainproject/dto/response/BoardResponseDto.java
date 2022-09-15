@@ -25,6 +25,8 @@ public class BoardResponseDto {
     private LocalDateTime createAt;
     private String content;
 
+//    private boolean isLike;
+
     private List<GetBoardResponseDto> comments;
 
     public void fromBoard(Board board) {
@@ -42,6 +44,8 @@ public class BoardResponseDto {
     public void fromBoardComment(List<GetBoardResponseDto> boardComment) {
         this.comments = boardComment;
     }
+
+//    public void fromBoardLike(BoardLike boardLike){this.isLike = }
 
 
 }
