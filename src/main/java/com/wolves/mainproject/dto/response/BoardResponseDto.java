@@ -25,7 +25,6 @@ public class BoardResponseDto {
     private LocalDateTime createAt;
     private String content;
 
-//    private boolean isLike;
 
     private List<GetBoardResponseDto> comments;
 
