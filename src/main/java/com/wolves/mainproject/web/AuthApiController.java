@@ -18,6 +18,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
@@ -42,7 +45,11 @@ public class AuthApiController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Void> login(){
+    public ResponseEntity<Void> login(HttpServletRequest request, HttpServletResponse response){
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            response.addCookie(cookie);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
