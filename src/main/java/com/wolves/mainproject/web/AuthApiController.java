@@ -46,10 +46,16 @@ public class AuthApiController {
 
     @GetMapping("/")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpServletResponse response){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            response.addCookie(cookie);
+        try{
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                response.addCookie(cookie);
+            }
         }
+        catch (Exception ignored){
+
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
