@@ -1,22 +1,17 @@
 package com.wolves.mainproject.service;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.domain.board.Board;
-import com.wolves.mainproject.domain.board.like.BoardLike;
-import com.wolves.mainproject.domain.board.like.BoardLikeRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.domain.user.advice.UserAdvice;
 import com.wolves.mainproject.domain.user.advice.UserAdviceRepository;
-import com.wolves.mainproject.domain.word.storage.WordStorage;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
-import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
-import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.UserResponseDto;
 import com.wolves.mainproject.dto.request.PasswordDto;
 import com.wolves.mainproject.dto.request.UserDto;
+import com.wolves.mainproject.dto.response.InquiryDto;
 import com.wolves.mainproject.exception.Common.CommonInvalidInputValue;
 import com.wolves.mainproject.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -54,7 +46,7 @@ public class MyPageService {
                                                PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
         checkPassword(requestDto, optionalUser);
-        return new ResponseEntity<>(buildUserDto(optionalUser),HttpStatus.OK);
+        return new ResponseEntity<>(buildUserDto(optionalUser), HttpStatus.OK);
     }
 
     // 회원정보 수정
@@ -71,7 +63,7 @@ public class MyPageService {
     public ResponseEntity<?> updatePassword(PasswordDto requestDto,
                                             PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
-        userRepository.save(requestDto.toUser(passwordEncoder.encode(requestDto.getPassword()),optionalUser));
+        userRepository.save(requestDto.toUser(passwordEncoder.encode(requestDto.getPassword()), optionalUser));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -111,15 +103,24 @@ public class MyPageService {
     @Transactional(readOnly = true)
     public void checkPassword(PasswordDto requestDto,
                               User user) {
-        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
             throw new CommonInvalidInputValue();
     }
 
 
     @Transactional(readOnly = true)
-    public List<UserAdvice> getUserQuestion(PrincipalDetails principalDetails) {
+    public List<InquiryDto> getUserQuestion(PrincipalDetails principalDetails) {
         User user = principalDetails.getUser();
-        return userAdviceRepository.findByUser(user);
+        List<UserAdvice> userAdviceList = userAdviceRepository.findByUser(user);
+        return userAdviceList.stream().map(userAdvice -> new InquiryDto(userAdvice)).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<InquiryDto> getAdminQuestion(PrincipalDetails principalDetails) {
+        checkUser(principalDetails.getUser().getId());
+        List<UserAdvice> userAdviceList = userAdviceRepository.findAll();
+        return userAdviceList.stream().map(userAdvice -> new InquiryDto(userAdvice)).toList();
+    }
+
 
 }

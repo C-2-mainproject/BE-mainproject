@@ -1,6 +1,7 @@
 package com.wolves.mainproject.domain.word.storage;
 
 
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -30,11 +30,10 @@ public class LikeService {
             boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
         }else{
             boardLikeRepository.deleteByUserAndBoard(user, board);
-
         }
 
         long boardLike = boardLikeRepository.findByBoard(board).size();
-        board.getLikeCount(boardLike);
+        board.bringLikeCount(boardLike);
 
     }
 
