@@ -20,7 +20,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
