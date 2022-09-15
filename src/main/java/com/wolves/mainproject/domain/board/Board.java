@@ -39,6 +39,9 @@ public class Board extends Timestamped {
     @ManyToOne
     private User user;
 
+    @Column(nullable = false)
+    private boolean isLike = false;
+
 
     public void update(BoardRequestDto boardRequestDto){
         this.title = boardRequestDto.getTitle();

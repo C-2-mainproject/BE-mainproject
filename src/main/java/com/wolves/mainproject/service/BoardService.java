@@ -57,17 +57,8 @@ public class BoardService {
         BoardContent boardContent = boardContentRepository.findById(board_id).orElseThrow();
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
         List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
-        return BoardResponseDto.builder()
-                .isNotice(board.isNotice())
-                .title(board.getTitle())
-                .likeCount(board.getLikeCount())
-                .commentCount(board.getCommentCount())
-                .content(boardContent.getContent())
-                .createAt(board.getCreateAt())
-                .comments(getBoardResponseDtos)
-                .build();
+        return new BoardResponseDto(board,boardContent,getBoardResponseDtos);
     }
-
 
     @Transactional
     public GetBoardDto creatBoard(User user, BoardRequestDto boardRequestDto) {
@@ -95,15 +86,7 @@ public class BoardService {
 
         List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
         List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
-        return BoardResponseDto.builder()
-                .isNotice(board.isNotice())
-                .title(board.getTitle())
-                .likeCount(board.getLikeCount())
-                .commentCount(board.getCommentCount())
-                .createAt(board.getCreateAt())
-                .content(boardContent.getContent())
-                .comments(getBoardResponseDtos)
-                .build();
+        return new BoardResponseDto(board,boardContent,getBoardResponseDtos);
     }
 
     @Transactional

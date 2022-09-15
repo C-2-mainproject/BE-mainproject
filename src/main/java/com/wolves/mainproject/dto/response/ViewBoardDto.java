@@ -2,6 +2,7 @@ package com.wolves.mainproject.dto.response;
 
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
+import com.wolves.mainproject.domain.board.like.BoardLike;
 import lombok.*;
 
 import java.time.LocalDateTime;

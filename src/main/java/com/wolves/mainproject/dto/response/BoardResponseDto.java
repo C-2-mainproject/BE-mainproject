@@ -45,7 +45,15 @@ public class BoardResponseDto {
         this.comments = boardComment;
     }
 
-//    public void fromBoardLike(BoardLike boardLike){this.isLike = }
+    public BoardResponseDto(Board board,BoardContent boardContent ,List<GetBoardResponseDto> getBoardResponseDtos){
+        this.isNotice = board.isNotice();
+        this.title = board.getTitle();
+        this.likeCount = board.getLikeCount();
+        this.commentCount = board.getCommentCount();
+        this.createAt = board.getCreateAt();
+        this.content = boardContent.getContent();
+        this.comments = getBoardResponseDtos;
+    }
 
 
 }
