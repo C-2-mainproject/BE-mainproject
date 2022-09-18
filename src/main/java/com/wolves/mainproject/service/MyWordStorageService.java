@@ -53,6 +53,12 @@ public class MyWordStorageService {
     }
 
     @Transactional
+    public void deleteWordStorage(User user, long wordStorageId){
+        WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
+        wordStorageRepository.delete(wordStorage);
+    }
+
+    @Transactional
     public void postBookmarkedWordStorage(User user, PostBookmarkedWordStorageDto dto, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         wordStorage.update(dto);
