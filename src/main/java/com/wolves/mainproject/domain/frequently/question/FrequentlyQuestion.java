@@ -39,10 +39,11 @@ public class FrequentlyQuestion extends Timestamped {
     @ManyToOne
     private User user;
 
-    public void update(FrequentlyQuestionDto requestDto) {
+    public void update(FrequentlyQuestionDto requestDto,User user) {
         this.title = requestDto.getTitle();
         this.category = requestDto.getCategory();
         this.reply = requestDto.getReply();
+        this.user = user;
     }
 
 }
