@@ -6,6 +6,7 @@ import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,9 +25,9 @@ public class BoardController {
     }
 
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchBoard(@RequestBody BoardRequestDto boardRequestDto){
-        return new ResponseEntity<>(boardService.searchBoard(boardRequestDto),  HttpStatus.OK);
+    @GetMapping("/title")
+    public ResponseEntity<?> searchBoard(@RequestParam String search){
+        return new ResponseEntity<>(boardService.searchBoard(search),  HttpStatus.OK);
     }
 
         @GetMapping("/id/{board_id}")
@@ -51,7 +52,13 @@ public class BoardController {
     @AuthValidation
     @DeleteMapping("/id/{board_id}")
     public ResponseEntity<?> deletedBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id){
-        return new ResponseEntity<>(boardService.deletedBoard(principalDetails.getUser(), board_id),HttpStatus.OK);
+        boardService.deletedBoard(principalDetails.getUser(), board_id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @AuthValidation
+    @GetMapping("/user/like")
+    public  ResponseEntity<?> getLikeBoard(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(boardService.getLikeBoard(principalDetails.getUser()),HttpStatus.OK);
+    }
 }
