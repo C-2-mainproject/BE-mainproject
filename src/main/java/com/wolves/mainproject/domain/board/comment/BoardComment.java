@@ -50,4 +50,5 @@ public class BoardComment extends Timestamped {
     public void delete() {
         this.status = false;
     }
+
 }

@@ -36,6 +36,13 @@ public class MyWordStorageApiController {
     }
 
     @AuthValidation
+    @PostMapping("/api/user/wordstorage/id/{wordStorageId}")
+    public ResponseEntity<Void> deleteWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        myWordStorageService.deleteWordStorage(principalDetails.getUser(), wordStorageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @AuthValidation
     @PutMapping("/api/user/wordstorage/id/{wordStorageId}")
     public ResponseEntity<Void> updateWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody RequestMyWordStorageDto dto){
         myWordStorageService.updateWordStorage(principalDetails.getUser(), dto, wordStorageId);
