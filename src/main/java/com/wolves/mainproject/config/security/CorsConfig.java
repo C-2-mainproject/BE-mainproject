@@ -18,7 +18,8 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
 
-        config.addExposedHeader("Authorization");
+        config.addExposedHeader("Set-Cookie");
+        config.addExposedHeader("cookie");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 

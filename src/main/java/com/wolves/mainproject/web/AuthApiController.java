@@ -45,17 +45,11 @@ public class AuthApiController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Void> login(HttpServletRequest request, HttpServletResponse response){
+    public void test(HttpServletRequest request, HttpServletResponse response){
         try{
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                response.addCookie(cookie);
-            }
+            response.addHeader("cookie", request.getCookies()[0].getValue());
+        }catch (Exception ignored){
+            throw new CustomException(ErrorCode.LOGIN_FAILED);
         }
-        catch (Exception ignored){
-
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
