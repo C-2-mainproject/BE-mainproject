@@ -37,12 +37,11 @@ public class AuthApiController {
     }
 
     @GetMapping("/")
-    public String test(HttpServletRequest request, HttpServletResponse response){
+    public void test(HttpServletRequest request, HttpServletResponse response){
         try{
             response.addHeader("cookie", request.getCookies()[0].getValue());
-            return "ok";
         }catch (Exception ignored){
-            return "not ok";
+            throw new CustomException(ErrorCode.LOGIN_FAILED);
         }
     }
 

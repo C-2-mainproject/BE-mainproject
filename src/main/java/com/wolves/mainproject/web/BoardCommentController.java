@@ -27,23 +27,20 @@ public class BoardCommentController {
     @AuthValidation
     @PutMapping("/id/{comment_id}")
     public ResponseEntity<?> updateComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long comment_id,@RequestBody BoardCommentRequestDto boardCommentRequestDto){
-        return new ResponseEntity<>(boardCommentService.updateComment(principalDetails.getUser(), comment_id, boardCommentRequestDto), HttpStatus.OK);
+        boardCommentService.updateComment(principalDetails.getUser(), comment_id, boardCommentRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AuthValidation
     @DeleteMapping("/id/{comment_id}")
     public ResponseEntity<?> deletedComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long comment_id){
-
-        return new ResponseEntity<>(boardCommentService.deleteComment(principalDetails.getUser(),comment_id),HttpStatus.OK);
+        boardCommentService.deleteComment(principalDetails.getUser(),comment_id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AuthValidation
-    @PostMapping("/id/{comment_id}")
+    @PostMapping("/id/{comment_id}/recomment")
     public ResponseEntity<?> replyComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id, @PathVariable BoardComment comment_id, @RequestBody BoardCommentRequestDto boardCommentRequestDto){
         return new ResponseEntity<>(boardCommentService.replyComment(principalDetails.getUser(),board_id,comment_id, boardCommentRequestDto),HttpStatus.OK);
     }
-
-
-
-
 }
