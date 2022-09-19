@@ -57,6 +57,7 @@ public class MyWordStorageService {
     public void deleteWordStorage(User user, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         wordStorageRepository.delete(wordStorage);
+        wordRepository.delete(Word.builder().wordStorageId(wordStorageId).build());
     }
 
     @Transactional
