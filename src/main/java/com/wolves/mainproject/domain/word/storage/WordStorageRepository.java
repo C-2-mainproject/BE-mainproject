@@ -23,10 +23,8 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
     Page<WordStorage> findAllByUser(User user, Pageable pageable);
     List<WordStorage> findAllByTitleContainingOrDescriptionContainingAndUser(String title, String description, User user);
 
-    List<WordStorageMapping> findByStatusOrderByLikeCountDesc(StatusType status, PageRequest pageRequest);
+    List<WordStorage> findByStatusOrderByLikeCountDesc(StatusType status, PageRequest pageRequest);
 
-    List<WordStorageMapping> findByStatusAndWordStorageCategory(StatusType status, WordStorageCategory searchCategory, PageRequest pageRequest);
-    List<WordStorageMapping> findByStatusAndTitleContaining(StatusType status, String title, PageRequest pageRequest);
 
     Optional<WordStorage> findByStatusAndId(StatusType status, Long id);
 
@@ -36,4 +34,8 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
             "on word_storage_category.id = word_storage.category_id " +
             "GROUP BY word_storage_category.name", nativeQuery = true)
     List<CategoryStatisticMapping> countByCategory();
+
+    List<WordStorage> findByIdLessThanAndStatusAndWordStorageCategory(Long lastArticleId, StatusType aPublic, WordStorageCategory searchCategory, PageRequest pageRequest);
+
+    List<WordStorage> findByIdLessThanAndStatusAndTitleContaining(Long lastArticleId, StatusType aPublic, String search, PageRequest pageRequest);
 }
