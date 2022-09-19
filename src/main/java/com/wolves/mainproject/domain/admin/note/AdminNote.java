@@ -35,8 +35,9 @@ public class AdminNote extends Timestamped {
     @ManyToOne
     private User user;
 
-    public void update(AdminNoteDto adminNoteDto) {
+    public void update(AdminNoteDto adminNoteDto, User user) {
         this.title = adminNoteDto.getTitle();
         this.content = adminNoteDto.getContent();
+        this.user = user;
     }
 }
