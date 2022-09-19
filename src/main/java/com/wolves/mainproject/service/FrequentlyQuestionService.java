@@ -48,7 +48,7 @@ public class FrequentlyQuestionService {
                                               PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
         FrequentlyQuestion frequently = checkFrequency(frequentlyId);
-        frequently.update(requestDto);
+        frequently.update(requestDto,optionalUser);
         frequentlyQuestionRepository.save(frequently);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -56,7 +56,6 @@ public class FrequentlyQuestionService {
     // 자묻질 삭제
     @Transactional
     public ResponseEntity<?> deleteFrequently(Long frequentlyId, PrincipalDetails principalDetails) {
-        User optionalUser = checkUser(principalDetails.getUser().getId());
         FrequentlyQuestion frequently = checkFrequency(frequentlyId);
         frequentlyQuestionRepository.delete(frequently);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -76,6 +75,7 @@ public class FrequentlyQuestionService {
     }
 
     // 자묻질 전체 리스트화
+    // JPA 인터페이스 만들어서 가지고오기 / 필요없는 정보 빼기 / FQPL
     @Transactional
     public List<AllFrequentlyQuestionResponseDto> getAllFrequents() {
         List<FrequentlyQuestion> frequentlyList = frequentlyQuestionRepository.findAll();

@@ -9,6 +9,7 @@ import com.wolves.mainproject.dto.AllAdminNoteResponseDto;
 import com.wolves.mainproject.dto.request.AdminNoteDto;
 import com.wolves.mainproject.exception.admin.note.AdminNoteNotFoundException;
 import com.wolves.mainproject.exception.user.UserNotFoundException;
+import com.wolves.mainproject.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class AdminNoteService {
                                         PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
         AdminNote adminNote = checkNote(noteId);
-        adminNote.update(requestDto);
+        adminNote.update(requestDto, optionalUser);
         noteRepository.save(adminNote);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -59,6 +60,7 @@ public class AdminNoteService {
     public ResponseEntity<?> deleteNote(Long frequentlyId,
                                         PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());
+        optionalUser.getRole().equals(RoleType.ROLE_ADMIN);
         AdminNote adminNote = checkNote(frequentlyId);
         noteRepository.delete(adminNote);
         return new ResponseEntity<>(HttpStatus.OK);

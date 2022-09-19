@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AdminNoteController {
 
+    //@Valid
+    //BindingResult bindingResult
+
     private final AdminNoteService adminNoteService;
 
     @AdminValidation
