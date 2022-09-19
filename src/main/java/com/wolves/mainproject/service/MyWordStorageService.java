@@ -42,7 +42,8 @@ public class MyWordStorageService {
     @Transactional
     public void insertWordStorage(User user, RequestMyWordStorageDto dto){
         WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
-        wordStorageRepository.save(dto.toWordStorage(category, user));
+        WordStorage wordStorage = wordStorageRepository.save(dto.toWordStorage(category, user));
+        wordRepository.save(dto.toWord(wordStorage.getId()));
     }
 
     @Transactional
