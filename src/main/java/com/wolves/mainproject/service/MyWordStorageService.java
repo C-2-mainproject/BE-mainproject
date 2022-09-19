@@ -103,7 +103,7 @@ public class MyWordStorageService {
     // @TODO : Need change to use jpa only
     private WordStorage getWordStorageWithCredential(User user, long wordStorageId){
         WordStorage wordStorage = wordStorageRepository.findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
-        if (user.getId() != wordStorage.getId())
+        if (user.getId() != wordStorage.getUser().getId())
             throw new WordStorageUnauthorizedException();
         return wordStorage;
     }
