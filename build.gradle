@@ -35,6 +35,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.7.3'
     implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
 }
 
 tasks.named('test') {
