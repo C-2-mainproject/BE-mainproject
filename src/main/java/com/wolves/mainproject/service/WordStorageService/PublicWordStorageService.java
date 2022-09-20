@@ -9,7 +9,6 @@ import com.wolves.mainproject.domain.word.storage.WordStorageMapping;
 import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRepository;
-import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.response.WordInfoDto;
 import com.wolves.mainproject.dto.response.WordStorageDetailResponseDto;
@@ -39,41 +38,39 @@ public class PublicWordStorageService {
     private final MyWordStorageService wordStorageService;
 
     @Transactional
-    public List<WordStorageResponseDto> getPublicWordStorageOrderByLikes(int page, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public List<WordStorageResponseDto> getPublicWordStoragesOrderByLikes(int page, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
+        List<WordStorage> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
-
-        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        return wordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
 
     }
 
     @Transactional
-    public List<WordStorageResponseDto> getPublicWordStorageByCategory(String search, int page,
-                                                                   @AuthenticationPrincipal PrincipalDetails principalDetails
+    public List<WordStorageResponseDto> getPublicWordStoragesByCategory(String search, Long lastArticleId,
+                                                                        @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
+        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(search)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.PUBLIC, searchCategory, pageRequest);
+        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndWordStorageCategory(lastArticleId, StatusType.PUBLIC, searchCategory, pageRequest);
 
-        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        return wordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
     }
 
     @Transactional
-    public List<WordStorageResponseDto> getPublicWordStorageByTitle(String search, int page,
-                                                                    @AuthenticationPrincipal PrincipalDetails principalDetails
+    public List<WordStorageResponseDto> getPublicWordStoragesByTitle(String search, Long lastArticleId,
+                                                                     @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
+        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
+        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndTitleContaining(lastArticleId, StatusType.PUBLIC, search, pageRequest);
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndTitleContaining(StatusType.PUBLIC, search, pageRequest);
-
-        return wordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        return wordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
     }
 
     @Transactional
-    public WordStorageDetailResponseDto getPublicWordStorageDetails(Long id, PrincipalDetails principalDetails) {
+    public WordStorageDetailResponseDto getPublicWordStorageDetails(Long id) {
 
         WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.PUBLIC, id)
                 .orElseThrow(WordStorageNotFoundException::new);
@@ -83,7 +80,6 @@ public class PublicWordStorageService {
 
         return new WordStorageDetailResponseDto(new WordInfoDto(wordList), wordStorage);
     }
-
 
     @Transactional
     public List<CategoryStatisticMapping> getWordStorageStatistics() {

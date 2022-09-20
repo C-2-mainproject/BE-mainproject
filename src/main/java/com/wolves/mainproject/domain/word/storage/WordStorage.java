@@ -63,9 +63,6 @@ public class WordStorage extends Timestamped {
     @JoinColumn(name = "original_wordstorage")
     private WordStorage originalWordStorage;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalWordStorage")
-    private List<WordStorage> broughtWordStorage;
-
     public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, StatusType status) {
         this.title = wordStorage.getTitle();
         this.description = wordStorage.getDescription();
