@@ -26,10 +26,8 @@ public class WordStorageTestController {
     // 단어 시험 문제 생성
     @AuthValidation
     @PostMapping("/api/user/wordstorage/test")
-    public ResponseEntity<Object> createWordProblems(@RequestBody WordExamRequestDto wordExamDto,
-                                     @AuthenticationPrincipal PrincipalDetails principalDetails
-    ){
-        return ResponseEntity.ok(wordStorageTestService.createWordExam(wordExamDto, principalDetails));
+    public ResponseEntity<Object> createWordProblems(@RequestBody WordExamRequestDto wordExamDto){
+        return ResponseEntity.ok(wordStorageTestService.createWordExam(wordExamDto));
 
     }
 
