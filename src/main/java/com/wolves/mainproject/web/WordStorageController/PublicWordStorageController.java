@@ -45,7 +45,9 @@ public class PublicWordStorageController {
     // 회원 공유 단어장 상세 조회
     @AuthValidation
     @GetMapping("/api/wordstorage/public/{id}")
-    public ResponseEntity<Object> getPublicWordStorageDetails(@PathVariable Long id){
+    public ResponseEntity<Object> getPublicWordStorageDetails(@PathVariable Long id,
+                                                              @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
         return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageDetails(id));
 
     }
