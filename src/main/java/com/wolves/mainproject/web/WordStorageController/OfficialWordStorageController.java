@@ -47,7 +47,9 @@ public class OfficialWordStorageController {
     // 공인 단어장 상세 조회
     @AuthValidation
     @GetMapping("/api/wordstorage/official/{id}")
-    public ResponseEntity<Object> getOfficialWordStorageDetails(@PathVariable Long id){
+    public ResponseEntity<Object> getOfficialWordStorageDetails(@PathVariable Long id,
+                                                                @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
         return ResponseEntity.ok(officialWordStorageService.getOfficialWordStorageDetails(id));
 
     }
