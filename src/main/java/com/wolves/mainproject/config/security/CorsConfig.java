@@ -18,7 +18,8 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("http://localhost:3000");
+        //config.addAllowedOriginPattern("*");
         config.addExposedHeader("Set-Cookie");
         config.addExposedHeader("cookie");
 
