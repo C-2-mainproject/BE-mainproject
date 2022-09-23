@@ -30,6 +30,11 @@ public class GoogleUserInfo extends OAuth2BaseUserInfo{
 
     @Override
     public String getUsername() {
-        return getProvider() + "_" + getProviderId();
+        return oAuth2User.getAttribute("name");
+    }
+
+    @Override
+    public String getProfileImage() {
+        return oAuth2User.getAttribute("picture");
     }
 }
