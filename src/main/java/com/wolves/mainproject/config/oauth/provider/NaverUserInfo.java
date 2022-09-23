@@ -34,6 +34,11 @@ public class NaverUserInfo extends OAuth2BaseUserInfo{
 
     @Override
     public String getUsername() {
-        return getProvider() + "_" + getProviderId();
+        return userInfo.get("nickname");
+    }
+
+    @Override
+    public String getProfileImage() {
+        return userInfo.get("profile_image");
     }
 }

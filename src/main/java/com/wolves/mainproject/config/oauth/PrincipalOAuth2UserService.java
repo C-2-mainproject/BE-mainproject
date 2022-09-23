@@ -7,6 +7,7 @@ import com.wolves.mainproject.config.oauth.provider.OAuth2BaseUserInfo;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.type.RoleType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -15,10 +16,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -36,6 +38,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2UserInfo.getEmail();
         String password = oAuth2UserInfo.getPassword(bCryptPasswordEncoder);
         String nickname = oAuth2UserInfo.getUsername();
+        String profileImage = oAuth2UserInfo.getProfileImage();
         RoleType role = oAuth2UserInfo.getRole();
 
 
@@ -46,7 +49,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                 .username(email)
                 .nickname(nickname)
                 .password(password)
-                .profileImage("")
+                .profileImage(profileImage)
                 .role(role)
                 .provider(provider)
                 .build();
