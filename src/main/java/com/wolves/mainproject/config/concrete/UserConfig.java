@@ -35,8 +35,6 @@ public class UserConfig {
                 .password(encoder.encode("1234"))
                 .profileImage("test.png")
                 .role(RoleType.ROLE_USER)
-                .gender("남")
-                .ageGroup(10)
                 .build();
     }
 
@@ -47,8 +45,6 @@ public class UserConfig {
                 .password(encoder.encode("1234"))
                 .profileImage("test.png")
                 .role(RoleType.ROLE_ADMIN)
-                .gender("남")
-                .ageGroup(10)
                 .build();
     }
 }

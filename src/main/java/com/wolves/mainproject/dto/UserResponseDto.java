@@ -13,7 +13,5 @@ public class UserResponseDto {
 
     private String nickname;
     private String profileImage;
-    private Integer ageGroup;
-    private String gender;
 
 }

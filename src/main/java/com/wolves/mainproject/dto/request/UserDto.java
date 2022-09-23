@@ -12,8 +12,6 @@ public class UserDto {
 
     private String nickname;
     private String profileImage;
-    private Integer ageGroup;
-    private String gender;
 
 
     public User toUser(User user) {
@@ -23,8 +21,6 @@ public class UserDto {
               .password(user.getPassword())
               .nickname(nickname)
               .profileImage(profileImage)
-              .ageGroup(ageGroup)
-              .gender(gender)
               .provider(user.getProvider())
               .role(user.getRole())
               .createAt(user.getCreateAt())
