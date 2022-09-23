@@ -20,8 +20,6 @@ public class RequestSignupDto {
     @LengthValidation(length = 30, exception = ErrorCode.NICKNAME_TOO_LARGE)
     private String nickname;
     private String profileImage;
-    private int ageGroup;
-    private String gender;
 
     public User toUser(){
         return User.builder()
@@ -29,8 +27,6 @@ public class RequestSignupDto {
                 .password(password)
                 .nickname(nickname)
                 .profileImage(profileImage)
-                .ageGroup(ageGroup)
-                .gender(gender)
                 .role(RoleType.ROLE_USER)
                 .build();
     }

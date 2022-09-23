@@ -22,8 +22,6 @@ public class PasswordDto {
                 .password(password)
                 .nickname(user.getNickname())
                 .profileImage(user.getProfileImage())
-                .ageGroup(user.getAgeGroup())
-                .gender(user.getGender())
                 .provider(user.getProvider())
                 .role(user.getRole())
                 .build();

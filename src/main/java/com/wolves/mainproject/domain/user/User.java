@@ -36,12 +36,6 @@ public class User extends Timestamped implements Serializable {
     @Column(nullable = false, name = "profile_image")
     private String profileImage;
 
-    @Column(nullable = false, name = "age_group")
-    private int ageGroup;
-
-    @Column(nullable = false, length = 2)
-    private String gender;
-
     @Column(length = 20)
     private String provider;
 

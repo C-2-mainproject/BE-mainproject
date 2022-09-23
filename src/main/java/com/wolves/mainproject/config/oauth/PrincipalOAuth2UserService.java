@@ -49,8 +49,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                 .profileImage("")
                 .role(role)
                 .provider(provider)
-                .ageGroup(0)
-                .gender("N")
                 .build();
 
 

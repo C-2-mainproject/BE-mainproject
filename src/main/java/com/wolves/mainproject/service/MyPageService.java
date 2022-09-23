@@ -92,8 +92,6 @@ public class MyPageService {
         return UserResponseDto.builder()
                 .nickname(user.getNickname())
                 .profileImage(user.getProfileImage())
-                .ageGroup(user.getAgeGroup())
-                .gender(user.getGender())
                 .build();
     }
 
