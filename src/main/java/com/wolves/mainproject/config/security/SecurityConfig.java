@@ -39,6 +39,10 @@ public class SecurityConfig {
                 .and()
                 .defaultSuccessUrl("/")
                 .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/")
+                .and()
                 .build();
     }
 
