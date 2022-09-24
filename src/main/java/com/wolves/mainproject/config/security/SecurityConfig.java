@@ -56,6 +56,10 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/")
+                .and()
                 .build();
     }
 
