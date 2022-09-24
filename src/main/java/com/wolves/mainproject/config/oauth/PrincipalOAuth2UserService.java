@@ -4,6 +4,8 @@ import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.config.oauth.provider.GoogleUserInfo;
 import com.wolves.mainproject.config.oauth.provider.NaverUserInfo;
 import com.wolves.mainproject.config.oauth.provider.OAuth2BaseUserInfo;
+import com.wolves.mainproject.domain.game.history.GameHistory;
+import com.wolves.mainproject.domain.game.history.GameHistoryRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
 import com.wolves.mainproject.exception.CustomException;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final GameHistoryRepository gameHistoryRepository;
 
     @Transactional
     @Override
@@ -42,6 +45,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         User user = userToEntity.getUser();
         if (!userRepository.existsByUsername(userToEntity.getEmail())){
             userRepository.save(user);
+            gameHistoryRepository.save(GameHistory.builder().user(user).build());
         }
 
         return new PrincipalDetails(user, oAuth2User.getAttributes());
