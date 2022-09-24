@@ -47,6 +47,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
             userRepository.save(user);
             gameHistoryRepository.save(GameHistory.builder().user(user).build());
         }
+        if (userRepository.existsByUsername(userToEntity.getEmail())){
+            user = userRepository.findByUsername(userToEntity.getEmail()).orElse(null);
+        }
 
         return new PrincipalDetails(user, oAuth2User.getAttributes());
     }
