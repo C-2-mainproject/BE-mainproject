@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -36,4 +37,5 @@ public class AuthService {
     public boolean checkNickname(RequestCheckNicknameDto dto){
         return userRepository.existsByNickname(dto.getNickname());
     }
+
 }
