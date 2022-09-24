@@ -6,15 +6,16 @@ import com.wolves.mainproject.config.oauth.provider.NaverUserInfo;
 import com.wolves.mainproject.config.oauth.provider.OAuth2BaseUserInfo;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
-import com.wolves.mainproject.type.RoleType;
+import com.wolves.mainproject.exception.CustomException;
+import com.wolves.mainproject.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,46 +23,36 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        OAuth2BaseUserInfo oAuth2UserInfo = null;
-        if (userRequest.getClientRegistration().getRegistrationId().equals("google")){
-            oAuth2UserInfo = new GoogleUserInfo(oAuth2User, userRequest);
-        }
-        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
-            oAuth2UserInfo = new NaverUserInfo(oAuth2User, userRequest, oAuth2User.getAttribute("response"));
-        }
 
-        String provider = oAuth2UserInfo.getProvider();
-        String email = oAuth2UserInfo.getEmail();
-        String password = oAuth2UserInfo.getPassword(bCryptPasswordEncoder);
-        String nickname = oAuth2UserInfo.getUsername();
-        String profileImage = oAuth2UserInfo.getProfileImage();
-        RoleType role = oAuth2UserInfo.getRole();
+        OAuth2BaseUserInfo oAuth2BaseUserInfo = new OAuth2BaseUserInfo(oAuth2User, userRequest);
+        registerObserver(oAuth2BaseUserInfo);
+
+        String oAuthType = userRequest.getClientRegistration().getRegistrationId();
+        oAuth2BaseUserInfo.findOAuthType(oAuthType);
+
+        UserToEntity userToEntity = new UserToEntity();
+        userToEntity.setUserByUserInfo(oAuth2BaseUserInfo.getOAuth2UserInfo(), bCryptPasswordEncoder);
 
 
-        User userEntity = userRepository.findByUsername(email).orElse(null);
-
-
-        User user = User.builder()
-                .username(email)
-                .nickname(nickname)
-                .password(password)
-                .profileImage(profileImage)
-                .role(role)
-                .provider(provider)
-                .build();
-
-
-        if (userEntity == null){
+        User user = userToEntity.getUser();
+        if (!userRepository.existsByUsername(userToEntity.getEmail())){
             userRepository.save(user);
-            userEntity = user;
         }
 
-
-        return new PrincipalDetails(userEntity, oAuth2User.getAttributes());
+        return new PrincipalDetails(user, oAuth2User.getAttributes());
     }
+
+    private void registerObserver(OAuth2BaseUserInfo oAuth2BaseUserInfo){
+        new GoogleUserInfo(oAuth2BaseUserInfo);
+        new NaverUserInfo(oAuth2BaseUserInfo);
+    }
+
+
+
 
 }
