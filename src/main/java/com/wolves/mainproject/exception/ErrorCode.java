@@ -36,6 +36,7 @@ public enum ErrorCode {
     NICKNAME_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R004", "닉네임 길이가 너무 깁니다."),
     EMAIL_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R005", "이메일 길이가 너무 깁니다."),
     GENDER_CONFLICT(HttpStatus.CONFLICT, "R006", "성별 형식이 올바르지 않습니다."),
+    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "R007", "지원하는 OAuth가 아닙니다."),
 
     // Board
     BOARD_PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 게시글을 찾을 수 없습니다."),
