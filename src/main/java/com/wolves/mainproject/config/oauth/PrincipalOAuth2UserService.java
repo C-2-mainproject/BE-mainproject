@@ -38,10 +38,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         UserToEntity userToEntity = new UserToEntity();
         userToEntity.setUserByUserInfo(oAuth2BaseUserInfo.getOAuth2UserInfo(), bCryptPasswordEncoder);
 
-        isUsernameOverlap(userToEntity);
-        User user = userToEntity.getUser();
 
-        userRepository.save(user);
+        User user = userToEntity.getUser();
+        if (!userRepository.existsByUsername(userToEntity.getEmail())){
+            userRepository.save(user);
+        }
+
         return new PrincipalDetails(user, oAuth2User.getAttributes());
     }
 
@@ -50,11 +52,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         new NaverUserInfo(oAuth2BaseUserInfo);
     }
 
-    private void isUsernameOverlap(UserToEntity userToEntity){
-        if (userRepository.existsByUsername(userToEntity.getEmail())){
-            throw new CustomException(ErrorCode.EMAIL_CONFLICT);
-        }
-    }
 
 
 

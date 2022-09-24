@@ -37,12 +37,12 @@ public class AuthApiController {
         return new ResponseEntity<>(authService.checkNickname(dto), HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public void test(HttpServletRequest request, HttpServletResponse response){
-        try{
-            response.addHeader("cookie", request.getCookies()[0].getValue());
-        }catch (Exception ignored){
-            throw new CustomException(ErrorCode.LOGIN_FAILED);
-        }
-    }
+//    @GetMapping("/")
+//    public void test(HttpServletRequest request, HttpServletResponse response){
+//        try{
+//            response.addHeader("cookie", request.getCookies()[0].getValue());
+//        }catch (Exception ignored){
+//            throw new CustomException(ErrorCode.LOGIN_FAILED);
+//        }
+//    }
 }
