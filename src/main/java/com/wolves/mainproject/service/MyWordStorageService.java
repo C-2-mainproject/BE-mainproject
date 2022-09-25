@@ -69,7 +69,7 @@ public class MyWordStorageService {
     @Transactional
     public void updateWordStorageStatus(User user, UpdateMyWordStorageStatusDto dto, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
-        wordStorage.update(dto);
+        wordStorage.update(dto, wordStorage);
     }
 
     @Transactional(readOnly = true)
