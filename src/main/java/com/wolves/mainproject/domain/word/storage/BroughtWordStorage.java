@@ -14,7 +14,7 @@ import javax.persistence.*;
 @SuperBuilder
 @Getter
 @Entity
-@Table
+@Table(name = "brought_word_storage")
 public class BroughtWordStorage extends Timestamped {
 
     @Id

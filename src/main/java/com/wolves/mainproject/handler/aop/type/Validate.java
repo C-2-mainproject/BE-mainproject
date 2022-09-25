@@ -1,6 +1,7 @@
 package com.wolves.mainproject.handler.aop.type;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
+import com.wolves.mainproject.exception.user.UserUnauthorizedException;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,6 @@ public class Validate {
         }
 
         if (!isValidated)
-            throw new RuntimeException("세션이 존재하지 않습니다.");
+            throw new UserUnauthorizedException();
     }
 }
