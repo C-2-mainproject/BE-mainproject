@@ -7,6 +7,9 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.dto.request.my.word.storage.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.my.word.storage.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.exception.CustomException;
+import com.wolves.mainproject.exception.ErrorCode;
+import com.wolves.mainproject.exception.wordStorage.WordStorageNotValidException;
 import com.wolves.mainproject.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -76,12 +79,14 @@ public class WordStorage extends Timestamped {
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
         this.title = dto.getTitle();
         this.description = dto.getDescription();
-        this.status = StatusType.findByBoolean(dto.isStatus());
+        this.status = StatusType.getStatus(dto.isStatus());
         this.wordStorageCategory = category;
     }
 
-    public void update(UpdateMyWordStorageStatusDto dto){
-        this.status = StatusType.findByBoolean(dto.isStatus());
+    public void update(UpdateMyWordStorageStatusDto dto, WordStorage wordStorage){
+        if (wordStorage.getOriginalWordStorage() != null)
+            throw new WordStorageNotValidException();
+        this.status = StatusType.getStatus(dto.isStatus());
     }
     public void update(PostBookmarkedWordStorageDto dto) { this.isBookmarked = dto.isStatus(); }
 

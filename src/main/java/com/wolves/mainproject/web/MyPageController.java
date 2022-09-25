@@ -1,7 +1,6 @@
 package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.dto.request.PasswordDto;
 import com.wolves.mainproject.dto.request.UserDto;
 import com.wolves.mainproject.handler.aop.annotation.AdminValidation;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
@@ -20,9 +19,8 @@ public class MyPageController {
 
     @AuthValidation
     @PostMapping("/api/user")
-    public ResponseEntity<?> getUserToPassword(@RequestBody PasswordDto requestDto,
-                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return myPageService.getUserToPassword(requestDto, principalDetails);
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return myPageService.getUserInfo(principalDetails);
     }
 
     @AuthValidation
@@ -33,17 +31,9 @@ public class MyPageController {
     }
 
     @AuthValidation
-    @PutMapping("/api/user/password")
-    public ResponseEntity<?> updatePassword(@RequestBody PasswordDto requestDto,
-                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return myPageService.updatePassword(requestDto, principalDetails);
-    }
-
-    @AuthValidation
     @DeleteMapping("/api/user")
-    public ResponseEntity<?> deleteUser(@RequestBody PasswordDto requestDto,
-                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
-        return myPageService.deleteUser(requestDto, principalDetails);
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return myPageService.deleteUser(principalDetails);
     }
 
     @AuthValidation
