@@ -29,6 +29,8 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
 
     Optional<WordStorage> findByStatusAndId(StatusType status, Long id);
 
+    List<WordStorageMapping> findByStatus(StatusType status);
+
     @Query(value = "SELECT word_storage_category.name as categoryName, COUNT(*) " +
             "AS count FROM word_storage " +
             "left join word_storage_category " +

@@ -26,7 +26,7 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final UserAdviceRepository userAdviceRepository;
 
-    // 암호 입력을 통한 회원정보 조회
+    // 회원정보 조회
     @Transactional(readOnly = true)
     public ResponseEntity<?> getUserInfo(PrincipalDetails principalDetails) {
         User optionalUser = checkUser(principalDetails.getUser().getId());

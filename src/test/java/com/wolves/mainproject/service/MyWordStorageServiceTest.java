@@ -140,7 +140,7 @@ public class MyWordStorageServiceTest {
         long requestId = 1L;
         WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
         // When
-        wordStorage.update(dto);
+        wordStorage.update(dto, wordStorage);
         WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
         // Then
         assertEquals(StatusType.PUBLIC, wordStoragePS.getStatus());
