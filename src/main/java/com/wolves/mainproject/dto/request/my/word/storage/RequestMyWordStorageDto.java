@@ -31,7 +31,7 @@ public class RequestMyWordStorageDto {
                 .description(description)
                 .wordStorageCategory(category)
                 .user(user)
-                .status(StatusType.findByBoolean(status))
+                .status(StatusType.getStatusByUser(status, user))
                 .build();
     }
 

@@ -79,12 +79,12 @@ public class WordStorage extends Timestamped {
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
         this.title = dto.getTitle();
         this.description = dto.getDescription();
-        this.status = StatusType.findByBoolean(dto.isStatus());
+        this.status = StatusType.getStatus(dto.isStatus());
         this.wordStorageCategory = category;
     }
 
     public void update(UpdateMyWordStorageStatusDto dto){
-        this.status = StatusType.findByBoolean(dto.isStatus());
+        this.status = StatusType.getStatus(dto.isStatus());
     }
     public void update(PostBookmarkedWordStorageDto dto) { this.isBookmarked = dto.isStatus(); }
 
