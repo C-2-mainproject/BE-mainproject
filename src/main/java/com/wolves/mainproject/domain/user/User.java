@@ -19,6 +19,7 @@ import java.io.Serializable;
 @SuperBuilder
 @Getter
 @Entity
+@Table(name = "user")
 public class User extends Timestamped implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,6 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
+@Table(name = "board")
 @Entity
 public class Board extends Timestamped {
     @Id
