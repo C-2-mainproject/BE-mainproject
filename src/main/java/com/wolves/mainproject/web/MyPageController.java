@@ -18,7 +18,7 @@ public class MyPageController {
     private final MyPageService myPageService;
 
     @AuthValidation
-    @PostMapping("/api/user")
+    @GetMapping("/api/user")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return myPageService.getUserInfo(principalDetails);
     }
