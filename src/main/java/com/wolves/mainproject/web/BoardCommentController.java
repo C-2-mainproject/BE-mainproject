@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/board/id/{board_id}/comment")
+import javax.validation.Valid;
+
+@RequestMapping("/api/board/id/{boardId}/comment")
 @RestController
 @RequiredArgsConstructor
 public class BoardCommentController {
@@ -20,27 +23,27 @@ public class BoardCommentController {
 
     @AuthValidation
     @PostMapping()
-    public ResponseEntity<?> createComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id, @RequestBody BoardCommentRequestDto boardCommentRequestDto) {
-        return new ResponseEntity<>(boardCommentService.createComment(principalDetails.getUser(), board_id,boardCommentRequestDto),HttpStatus.OK);
+    public ResponseEntity<?> createComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId, @RequestBody @Valid BoardCommentRequestDto boardCommentRequestDto, BindingResult bindingResult) {
+        return new ResponseEntity<>(boardCommentService.createComment(principalDetails.getUser(), boardId,boardCommentRequestDto),HttpStatus.OK);
     }
 
     @AuthValidation
-    @PutMapping("/id/{comment_id}")
-    public ResponseEntity<?> updateComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long comment_id,@RequestBody BoardCommentRequestDto boardCommentRequestDto){
-        boardCommentService.updateComment(principalDetails.getUser(), comment_id, boardCommentRequestDto);
+    @PutMapping("/id/{commentId}")
+    public ResponseEntity<?> updateComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long commentId,@RequestBody @Valid BoardCommentRequestDto boardCommentRequestDto, BindingResult bindingResult){
+        boardCommentService.updateComment(principalDetails.getUser(), commentId, boardCommentRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AuthValidation
-    @DeleteMapping("/id/{comment_id}")
-    public ResponseEntity<?> deletedComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long comment_id){
-        boardCommentService.deleteComment(principalDetails.getUser(),comment_id);
+    @DeleteMapping("/id/{commentId}")
+    public ResponseEntity<?> deletedComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long commentId){
+        boardCommentService.deleteComment(principalDetails.getUser(),commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AuthValidation
-    @PostMapping("/id/{comment_id}/recomment")
-    public ResponseEntity<?> replyComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id, @PathVariable BoardComment comment_id, @RequestBody BoardCommentRequestDto boardCommentRequestDto){
-        return new ResponseEntity<>(boardCommentService.replyComment(principalDetails.getUser(),board_id,comment_id, boardCommentRequestDto),HttpStatus.OK);
+    @PostMapping("/id/{commentId}/recomment")
+    public ResponseEntity<?> replyComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId, @PathVariable BoardComment commentId, @RequestBody @Valid BoardCommentRequestDto boardCommentRequestDto, BindingResult bindingResult){
+        return new ResponseEntity<>(boardCommentService.replyComment(principalDetails.getUser(),boardId,commentId, boardCommentRequestDto),HttpStatus.OK);
     }
 }

@@ -1,6 +1,6 @@
-//package com.wolves.mainproject.domain.board.recomment;
-//
-//import com.wolves.mainproject.domain.board.comment.BoardComment;
+package com.wolves.mainproject.domain.board.recomment;
+
+import com.wolves.mainproject.domain.board.comment.BoardComment;
 //import com.wolves.mainproject.domain.common.Timestamped;
 //import com.wolves.mainproject.domain.user.User;
 //import lombok.AllArgsConstructor;
