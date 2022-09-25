@@ -36,7 +36,7 @@ public class BoardCommentController {
 
     @AuthValidation
     @DeleteMapping("/id/{commentId}")
-    public ResponseEntity<?> deletedComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long commentId){
+    public ResponseEntity<?> deleteComment(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long commentId){
         boardCommentService.deleteComment(principalDetails.getUser(),commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

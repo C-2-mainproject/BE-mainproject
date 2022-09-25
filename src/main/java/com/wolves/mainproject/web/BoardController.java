@@ -22,8 +22,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping()
-    public ResponseEntity<?> getBoardAll(){
-        return new ResponseEntity<>(boardService.getBoardAll(), HttpStatus.OK );
+    public ResponseEntity<?> getAllBoard(){
+        return new ResponseEntity<>(boardService.getAllBoard(), HttpStatus.OK );
     }
 
 
@@ -33,8 +33,8 @@ public class BoardController {
     }
 
         @GetMapping("/id/{boardId}")
-    public ResponseEntity<?> getBoard(@PathVariable long boardId){
-        return new ResponseEntity<>(boardService.getBoardById(boardId),HttpStatus.OK);
+    public ResponseEntity<?> getBoardDetails(@PathVariable long boardId){
+        return new ResponseEntity<>(boardService.getBoardDetails(boardId),HttpStatus.OK);
     }
 
     @AuthValidation
@@ -53,14 +53,14 @@ public class BoardController {
 
     @AuthValidation
     @DeleteMapping("/id/{boardId}")
-    public ResponseEntity<?> deletedBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId){
-        boardService.deletedBoard(principalDetails.getUser(), boardId);
+    public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId){
+        boardService.deleteBoard(principalDetails.getUser(), boardId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AuthValidation
     @GetMapping("/user/like")
-    public  ResponseEntity<?> getLikeBoard(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        return new ResponseEntity<>(boardService.getLikeBoard(principalDetails.getUser()),HttpStatus.OK);
+    public  ResponseEntity<?> findLikeBoardList(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(boardService.findLikeBoardList(principalDetails.getUser()),HttpStatus.OK);
     }
 }

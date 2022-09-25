@@ -52,7 +52,7 @@ public class BoardService {
 
     //게시판 조회
     @Transactional(readOnly = true)
-    public List<ViewBoardDto> getBoardAll() {
+    public List<ViewBoardDto> getAllBoard() {
         List<Board> boards = boardRepository.findAll();
         return boards.stream().map(board -> new ViewBoardDto(board)).toList();
     }
@@ -66,8 +66,8 @@ public class BoardService {
 
     //게시글 상세조회
     @Transactional
-    public BoardResponseDto getBoardById(long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardPageNotFoundException());
+    public BoardResponseDto getBoardDetails(long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
         BoardContent boardContent = boardContentRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
         return new BoardResponseDto(board,boardContent,getBoardResponseDtoList(board));
     }
@@ -94,14 +94,14 @@ public class BoardService {
 
     //게시글 삭제
     @Transactional
-    public void deletedBoard(User user, long boardId) {
+    public void deleteBoard(User user, long boardId) {
         Board board = getBoardWithCredential(user,boardId);
         boardRepository.delete(board);
     }
 
     //좋아요한 게시글 조회
     @Transactional
-    public List<ViewBoardDto> getLikeBoard(User user) {
+    public List<ViewBoardDto> findLikeBoardList(User user) {
         List<BoardLike> boardlikes = boardLikeRepository.findByUser(user);
         List<ViewBoardDto> boards = boardlikes.stream().map(boardLike -> new ViewBoardDto(boardLike.getBoard())).collect(Collectors.toList());
         return boards;
