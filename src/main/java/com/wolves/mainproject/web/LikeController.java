@@ -16,8 +16,8 @@ public class LikeController {
     private final LikeService likeService;
 
     @AuthValidation
-    @PostMapping("/api/board/id/{board_id}/like") // 게시글 좋아요
-    public void likeBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long board_id) {
-        likeService.likeBoard(principalDetails,board_id);
+    @PostMapping("/api/board/id/{boardId}/like") // 게시글 좋아요
+    public void likeBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long boardId) {
+        likeService.likeBoard(principalDetails,boardId);
     }
 }

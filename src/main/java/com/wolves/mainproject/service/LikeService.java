@@ -7,6 +7,8 @@ import com.wolves.mainproject.domain.board.like.BoardLike;
 import com.wolves.mainproject.domain.board.like.BoardLikeRepository;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.user.UserRepository;
+import com.wolves.mainproject.exception.board.BoardPageNotFoundException;
+import com.wolves.mainproject.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,9 @@ public class LikeService {
 
 
     @Transactional
-    public void likeBoard(PrincipalDetails principalDetails, Long board_id) {
-        User user = userRepository.findByUsername(principalDetails.getUsername()).orElseThrow();
-        Board board = boardRepository.findById(board_id).orElseThrow();
+    public void likeBoard(PrincipalDetails principalDetails, Long boardId) {
+        User user = userRepository.findByUsername(principalDetails.getUsername()).orElseThrow(UserNotFoundException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
         if(!boardLikeRepository.existsByUserAndBoard(user,board)){
             boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
         }else{
