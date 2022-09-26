@@ -1,6 +1,5 @@
 package com.wolves.mainproject.service;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.wolves.mainproject.domain.board.comment.BoardComment;
 import com.wolves.mainproject.domain.board.like.BoardLike;
 import com.wolves.mainproject.dto.request.board.BoardRequestDto;
@@ -14,14 +13,11 @@ import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.dto.request.board.GetBoardDto;
 import com.wolves.mainproject.dto.response.*;
 import com.wolves.mainproject.exception.board.BoardPageNotFoundException;
-import com.wolves.mainproject.exception.board.BoardTitleTooLargeException;
 import com.wolves.mainproject.exception.board.BoardUnauthorizedException;
-import com.wolves.mainproject.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,32 +34,47 @@ public class BoardService {
     private final BoardLikeRepository boardLikeRepository;
 
 
+
+    // @TODO : Need change to use jpa only
+    private Board getBoardWithCredential(User user, long boardId){
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
+        if (user.getId() != board.getUser().getId())
+            throw new BoardUnauthorizedException();
+        return board;
+    }
+
+    // @TODO : Need change to use jpa only
+    private List<GetBoardResponseDto> getBoardResponseDtoList(Board board){
+        List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
+        List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
+        return getBoardResponseDtos;
+    }
+
+    //게시판 조회
     @Transactional(readOnly = true)
-    public List<ViewBoardDto> getBoardAll() {
+    public List<ViewBoardDto> getAllBoard() {
         List<Board> boards = boardRepository.findAll();
         return boards.stream().map(board -> new ViewBoardDto(board)).toList();
     }
 
-
+    //게시판 내 제목이나 유저로 검색
     @Transactional(readOnly = true)
     public List<ViewBoardDto> searchBoard(String search) {
-        List<Board> boards = boardRepository.findByTitleContaining(search);
-        return boards.stream().map(board -> new ViewBoardDto(board)).toList();
+        List<Board> boardsList = boardRepository.findByTitleContainingOrUserNicknameContaining(search);
+        return boardsList.stream().map(board -> new ViewBoardDto(board)).toList();
     }
 
+    //게시글 상세조회
     @Transactional
-    public BoardResponseDto getBoardById(long board_id) {
-        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
-        BoardContent boardContent = boardContentRepository.findById(board_id).orElseThrow();
-        List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
-        List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
-        return new BoardResponseDto(board,boardContent,getBoardResponseDtos);
+    public BoardResponseDto getBoardDetails(long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
+        BoardContent boardContent = boardContentRepository.findById(boardId).orElseThrow(BoardPageNotFoundException::new);
+        return new BoardResponseDto(board,boardContent,getBoardResponseDtoList(board));
     }
 
+    //게시글 만들기
     @Transactional
-    public GetBoardDto creatBoard(User user, BoardRequestDto boardRequestDto) {
-        if (boardRequestDto.getTitle().length() > 40)
-            throw new BoardTitleTooLargeException();
+    public GetBoardDto createBoard(User user, BoardRequestDto boardRequestDto) {
         Board board = Board.builder().title(boardRequestDto.getTitle()).user(user).build();
         boardRepository.save(board);
         BoardContent boardContent = BoardContent.builder().board(board).content(boardRequestDto.getContent()).build();
@@ -71,38 +82,28 @@ public class BoardService {
         return new GetBoardDto(user, board, boardContent);
     }
 
+    //게시글 업데이트
     @Transactional
-    public BoardResponseDto updateBoard(User user, long board_id, BoardRequestDto boardRequestDto) {
-        if (boardRequestDto.getTitle().length() > 40) {
-            throw new BoardTitleTooLargeException();
-        }
-        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
-        if (!user.getUsername().equals(board.getUser().getUsername())) {
-            throw new BoardUnauthorizedException();
-        }
+    public BoardResponseDto updateBoard(User user, long boardId, BoardRequestDto boardRequestDto) {
+        Board board = getBoardWithCredential(user,boardId);
         board.update(boardRequestDto);
         BoardContent boardContent = boardContentRepository.findByBoard(board);
         boardContent.update(boardRequestDto);
-
-        List<BoardComment> boardComments = boardCommentRepository.findByBoard(board);
-        List<GetBoardResponseDto> getBoardResponseDtos = boardComments.stream().map(boardComment -> new GetBoardResponseDto(boardComment)).toList();
-        return new BoardResponseDto(board,boardContent,getBoardResponseDtos);
+        return new BoardResponseDto(board,boardContent,getBoardResponseDtoList(board));
     }
 
+    //게시글 삭제
     @Transactional
-    public void deletedBoard(User user, long board_id) {
-        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BoardPageNotFoundException());
-        if (!user.getUsername().equals(board.getUser().getUsername())) {
-            throw new BoardUnauthorizedException();
-        }
+    public void deleteBoard(User user, long boardId) {
+        Board board = getBoardWithCredential(user,boardId);
         boardRepository.delete(board);
     }
 
+    //좋아요한 게시글 조회
     @Transactional
-    public List<ViewBoardDto> getLikeBoard(User user) {
+    public List<ViewBoardDto> findLikeBoardList(User user) {
         List<BoardLike> boardlikes = boardLikeRepository.findByUser(user);
         List<ViewBoardDto> boards = boardlikes.stream().map(boardLike -> new ViewBoardDto(boardLike.getBoard())).collect(Collectors.toList());
         return boards;
     }
 }
-

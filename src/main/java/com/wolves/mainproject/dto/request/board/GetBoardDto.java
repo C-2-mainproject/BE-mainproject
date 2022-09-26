@@ -24,16 +24,6 @@ public class GetBoardDto {
     private LocalDateTime createAt;
     private String content;
 
-    public void fromBoard(Board board){
-        this.isNotice = board.isNotice();
-        this.title = board.getTitle();
-        this.likeCount = board.getLikeCount();
-        this.commentCount = board.getCommentCount();
-        this.createAt = board.getCreateAt();
-    }
-    public void fromBoardContent(BoardContent boardContent){
-        this.content = boardContent.getContent();
-    }
 
     public GetBoardDto(User user, Board board, BoardContent boardContent){
         if (user.getRole().equals(RoleType.ROLE_ADMIN)){
