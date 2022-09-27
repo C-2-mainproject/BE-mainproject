@@ -39,4 +39,6 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
     List<WordStorage> findByIdLessThanAndStatusAndWordStorageCategory(Long lastArticleId, StatusType aPublic, WordStorageCategory searchCategory, PageRequest pageRequest);
 
     List<WordStorage> findByIdLessThanAndStatusAndTitleContaining(Long lastArticleId, StatusType aPublic, String search, PageRequest pageRequest);
+
+    long countByStatus(StatusType official);
 }

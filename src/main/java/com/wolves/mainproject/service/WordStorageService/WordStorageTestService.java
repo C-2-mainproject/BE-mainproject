@@ -52,12 +52,12 @@ public class WordStorageTestService {
         return new FinishWordExamResponseDto(newWordStorageId);
     }
 
-    private Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
+    Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
         Word word = finishWordExamDto.toWord(newWordStorage, finishWordExamDto);
         return wordRepository.save(word).getWordStorageId();
     }
 
-    private void saveWordStorageWrongAnswer(WrongAnswer wrongAnswer, WordStorage newWordStorage) {
+    void saveWordStorageWrongAnswer(WrongAnswer wrongAnswer, WordStorage newWordStorage) {
         WordStorageWrongAnswer wordStorageWrongAnswer = WordStorageWrongAnswer.builder()
                 .wrongAnswer(wrongAnswer)
                 .wordStorage(newWordStorage)
@@ -66,7 +66,7 @@ public class WordStorageTestService {
         wordStorageWrongAnswerRepository.save(wordStorageWrongAnswer);
     }
 
-    private WordStorage saveAndGetWordStorage(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
+    WordStorage saveAndGetWordStorage(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
         WordStorageCategory wordStorageCategory = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
                 .orElseThrow(WordStorageNotFoundException::new).getWordStorageCategory();
 
@@ -77,7 +77,7 @@ public class WordStorageTestService {
         return newWordStorage;
     }
 
-    private WrongAnswer saveAndGetWrongAnswer(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
+    WrongAnswer saveAndGetWrongAnswer(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
         WrongAnswer wrongAnswer = finishWordExamDto.toAnswer(finishWordExamDto, principalDetails);
         wrongAnswerRepository.save(wrongAnswer);
         return wrongAnswer;
