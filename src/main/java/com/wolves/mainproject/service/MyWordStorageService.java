@@ -53,7 +53,7 @@ public class MyWordStorageService {
     public void updateWordStorage(User user, RequestMyWordStorageDto dto, long wordStorageId){
         WordStorage wordStorage = getWordStorageWithCredential(user, wordStorageId);
         WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
-        wordStorage.update(dto, category);
+        wordStorage.update(dto, category, user);
     }
 
     @Transactional
