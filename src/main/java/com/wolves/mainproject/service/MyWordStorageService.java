@@ -113,6 +113,7 @@ public class MyWordStorageService {
         return wordStorage;
     }
 
+
     private void wordStorageCountValidate(long count){
         // @TODO : Need merge final value to one site
         long maxWordStorage = 40;
@@ -120,22 +121,26 @@ public class MyWordStorageService {
             throw new WordStorageNotAcceptableException();
     }
 
-    public List<WordStorageResponseDto> isHavingWordStorage(PrincipalDetails principalDetails, List<WordStorageMapping> wordStorages) {
+    
+    public List<WordStorageResponseDto> setHaveStorageFlags(PrincipalDetails principalDetails, List<WordStorage> wordStorages) {
         List<WordStorageResponseDto> result = new ArrayList<>();
 
-        for(WordStorageMapping wordStorage : wordStorages){
-            WordStorage originalWordStorage = wordStorageRepository.findById(wordStorage.getId())
-                    .orElseThrow(WordStorageNotFoundException::new);
-
-            WordStorageResponseDto responseDto = new WordStorageResponseDto(wordStorage.getId(), wordStorage.getTitle(), wordStorage.getDescription());
-
-            if(principalDetails != null){
-                responseDto.setHaveStorage(wordStorageRepository.existsByUserAndOriginalWordStorage(principalDetails.getUser(), originalWordStorage));
-            } else { responseDto.setHaveStorage(false); }
-
-            result.add(responseDto);
+        for(WordStorage wordStorage : wordStorages){
+            result.add(setHaveStorageFlag(principalDetails, wordStorage));
         }
         return result;
+    }
+
+    private WordStorageResponseDto setHaveStorageFlag(PrincipalDetails principalDetails, WordStorage originalWordStorage) {
+        WordStorageResponseDto wordStorageResponseDto = new WordStorageResponseDto(originalWordStorage);
+
+        if(principalDetails != null){
+            wordStorageResponseDto.setHaveStorage(wordStorageRepository.existsByUserAndOriginalWordStorage(principalDetails.getUser(), originalWordStorage));
+        } else {
+            wordStorageResponseDto.setHaveStorage(false);
+        }
+
+        return wordStorageResponseDto;
     }
 
 

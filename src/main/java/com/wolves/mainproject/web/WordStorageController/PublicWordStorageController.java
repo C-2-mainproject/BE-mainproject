@@ -19,26 +19,26 @@ public class PublicWordStorageController {
     public ResponseEntity<Object> getPublicWordStorageOrderByLikes(@RequestParam int page,
                                                                    @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageOrderByLikes(page, principalDetails));
+        return ResponseEntity.ok(publicWordStorageService.getPublicWordStoragesOrderByLikes(page, principalDetails));
     }
 
     // 회원 공유 단어장 카테고리로 검색 (search)
     @GetMapping("/api/wordstorage/public/filter")
     public ResponseEntity<Object> getPublicWordStorageOrderByCategory(@RequestParam String search,
-                                                                      @RequestParam int page,
+                                                                      @RequestParam Long lastArticleId,
                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageByCategory(search, page, principalDetails));
+        return ResponseEntity.ok(publicWordStorageService.getPublicWordStoragesByCategory(search, lastArticleId, principalDetails));
 
     }
 
     // 회원 공유 단어장 제목으로 검색 (search)
     @GetMapping("/api/wordstorage/public/title")
     public ResponseEntity<Object> getPublicWordStorageByTitle(@RequestParam String search,
-                                                              @RequestParam int page,
+                                                              @RequestParam Long lastArticleId,
                                                               @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageByTitle(search, page, principalDetails));
+        return ResponseEntity.ok(publicWordStorageService.getPublicWordStoragesByTitle(search, lastArticleId, principalDetails));
 
     }
 
@@ -48,7 +48,7 @@ public class PublicWordStorageController {
     public ResponseEntity<Object> getPublicWordStorageDetails(@PathVariable Long id,
                                                               @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageDetails(id, principalDetails));
+        return ResponseEntity.ok(publicWordStorageService.getPublicWordStorageDetails(id));
 
     }
 

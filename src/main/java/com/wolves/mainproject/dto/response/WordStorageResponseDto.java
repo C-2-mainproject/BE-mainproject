@@ -1,5 +1,7 @@
 package com.wolves.mainproject.dto.response;
 
+import com.wolves.mainproject.domain.word.storage.WordStorage;
+import com.wolves.mainproject.domain.word.storage.WordStorageMapping;
 import lombok.*;
 
 import java.util.List;
@@ -15,9 +17,9 @@ public class WordStorageResponseDto {
     private String description;
     private boolean haveStorage;
 
-    public WordStorageResponseDto(Long id, String title, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
+    public WordStorageResponseDto(WordStorage wordStorage) {
+        this.id = wordStorage.getId();
+        this.title = wordStorage.getTitle();
+        this.description = wordStorage.getDescription();
     }
 }

@@ -18,11 +18,11 @@ public class UserDto {
       return User.builder()
               .id(user.getId())
               .username(user.getUsername())
-              .password(user.getPassword())
               .nickname(nickname)
               .profileImage(profileImage)
               .provider(user.getProvider())
               .role(user.getRole())
+              .createAt(user.getCreateAt())
               .build();
     }
 
