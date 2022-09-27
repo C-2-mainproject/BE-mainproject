@@ -1,5 +1,6 @@
 package com.wolves.mainproject.service.WordStorageService;
 
+import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.domain.user.User;
@@ -12,7 +13,9 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRe
 import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository;
 import com.wolves.mainproject.dto.response.WordInfoDto;
 import com.wolves.mainproject.dto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordStorageResponseDto;
 import com.wolves.mainproject.type.StatusType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,8 @@ class PublicWordStorageServiceTest {
     public UserRepository userRepository;
     @Autowired
     public WordRepository wordRepository;
+    @Autowired
+    public PublicWordStorageService publicWordStorageService;
 
     void makeWordStorage(){
         User user = userRepository.findById(1L).orElseThrow();
@@ -49,7 +54,7 @@ class PublicWordStorageServiceTest {
 
         wordStorageRepository.save(wordStorage);
     }
-
+    @BeforeEach
     void makeWordStorages(){
         makeWordStorage();
         makeWordStorage();
@@ -61,39 +66,38 @@ class PublicWordStorageServiceTest {
     void getPublicWordStoragesOrderByLikes() {
         //given
         int page = 1;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.PUBLIC);
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(page-1,16, Sort.by(Sort.Direction.DESC,"id"));
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        List<WordStorage> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.PUBLIC, pageRequest);
-
+        List<WordStorageResponseDto> wordStorageResponseDto = publicWordStorageService.getPublicWordStoragesOrderByLikes(page, principalDetails);
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.PUBLIC, wordStorages.get(0).getStatus());
-        assertEquals("test",wordStorages.get(0).getTitle());
-        assertEquals("testDescription",wordStorages.get(0).getDescription());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertEquals("test", wordStorageResponseDto.get(0).getTitle());
+        assertEquals("testDescription", wordStorageResponseDto.get(0).getDescription());
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
     }
 
     @Test
     @Order(2)
     void getPublicWordStoragesByCategory() {
         //given
-        int page = 1;
+        String category = wordStorageCategoryRepository.findById(1L).orElseThrow().getName();
         long lastArticleId = 999L;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.PUBLIC);
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(page-1,16, Sort.by(Sort.Direction.DESC,"id"));
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        WordStorageCategory category = wordStorageCategoryRepository.findById(1L).orElseThrow();
-        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndWordStorageCategory(lastArticleId, StatusType.PUBLIC, category, pageRequest);
+        List<WordStorageResponseDto> wordStorageResponseDto = publicWordStorageService.getPublicWordStoragesByCategory(category, lastArticleId, principalDetails);
+        WordStorage wordStorage = wordStorageRepository.findById(wordStorageResponseDto.get(0).getId()).orElseThrow();
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.PUBLIC, wordStorages.get(0).getStatus());
-        assertEquals(category.getName(), wordStorages.get(1).getWordStorageCategory().getName());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
+        assertEquals(wordStorage.getWordStorageCategory().getName(), category);
     }
 
     @Test
@@ -101,18 +105,18 @@ class PublicWordStorageServiceTest {
     void getPublicWordStoragesByTitle() {
         //given
         long lastArticleId = 999L;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.PUBLIC);
-        String search = "es";
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
+        String search = "test";
 
         //when
-        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndTitleContaining(lastArticleId, StatusType.PUBLIC, search, pageRequest);
+        List<WordStorageResponseDto> wordStorageResponseDto = publicWordStorageService.getPublicWordStoragesByTitle(search, lastArticleId, principalDetails);
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.PUBLIC, wordStorages.get(0).getStatus());
-        assertEquals("test", wordStorages.get(0).getTitle());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
+        assertEquals(search, wordStorageResponseDto.get(0).getTitle());
     }
 
     @Test
@@ -121,35 +125,30 @@ class PublicWordStorageServiceTest {
         //given
         List<List<String>> meaning = Arrays.asList(Arrays.asList("apple1", "apple2", "apple3"), Arrays.asList("banana1", "banana2", "banana3"));
         List<String> word = Arrays.asList("apple", "banana");
-
         Word words = new Word(1L, word, meaning);
-        makeWordStorages();
+
+        Long id = 1L;
 
         //when
         wordRepository.save(words);
-        WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.PUBLIC, 1L).orElseThrow();
-        Word wordList = wordRepository.findById(wordStorage.getId()).orElseThrow();
-        WordStorageDetailResponseDto dto = new WordStorageDetailResponseDto(new WordInfoDto(wordList), wordStorage);
+        WordStorageDetailResponseDto responseDto = publicWordStorageService.getPublicWordStorageDetails(id);
 
         //then
-        assertEquals(words.getWords(), dto.getWords().getWord());
-        assertEquals(words.getWordStorageId(), wordStorage.getId());
-        assertEquals(words.getMeanings(), dto.getWords().getMeaning());
+        assertEquals(words.getWords(), responseDto.getWords().getWord());
+        assertEquals(words.getMeanings(), responseDto.getWords().getMeaning());
+        assertEquals(id, responseDto.getId());
     }
 
     @Test
     @Order(5)
     void getWordStorageStatistics() {
 
-        // given
-        makeWordStorages();
-
         // when
-        List<CategoryStatisticMapping> statisticInfo = wordStorageRepository.countByCategory();
-        WordStorageCategory category = wordStorageCategoryRepository.findByName(statisticInfo.get(0).getCategoryName()).orElseThrow();
+        List<CategoryStatisticMapping> statistics = publicWordStorageService.getWordStorageStatistics();
 
         // then
-        assertNotNull(statisticInfo);
-        assertNotNull(category);
+        assertNotNull(statistics);
+        assertNotNull(statistics.get(0).getCategoryName());
+        assertNotNull(statistics.get(0).getCount());
     }
 }

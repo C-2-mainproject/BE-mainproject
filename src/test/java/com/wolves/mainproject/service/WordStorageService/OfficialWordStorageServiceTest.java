@@ -1,5 +1,6 @@
 package com.wolves.mainproject.service.WordStorageService;
 
+import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.domain.dynamo.word.Word;
 import com.wolves.mainproject.domain.dynamo.word.WordRepository;
 import com.wolves.mainproject.domain.user.User;
@@ -13,6 +14,8 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLikeRepository
 import com.wolves.mainproject.dto.request.my.word.storage.UpdateWordDto;
 import com.wolves.mainproject.dto.response.WordInfoDto;
 import com.wolves.mainproject.dto.response.WordStorageDetailResponseDto;
+import com.wolves.mainproject.dto.response.WordStorageResponseDto;
+import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.service.MyWordStorageService;
@@ -26,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.ArrayList;
@@ -45,7 +49,7 @@ class OfficialWordStorageServiceTest {
     @Autowired
     public WordRepository wordRepository;
     @Autowired
-    public WordStorageLikeRepository wordStorageLikeRepository;
+    public OfficialWordStorageService officialWordStorageService;
 
     void makeWordStorage(){
         User user = userRepository.findById(1L).orElseThrow();
@@ -61,6 +65,7 @@ class OfficialWordStorageServiceTest {
         wordStorageRepository.save(wordStorage);
     }
 
+    @BeforeEach
     void makeWordStorages(){
         makeWordStorage();
         makeWordStorage();
@@ -74,19 +79,18 @@ class OfficialWordStorageServiceTest {
     void getOfficialWordStoragesOrderByLike() {
         //given
         int page = 1;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.OFFICIAL);
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(page-1,16, Sort.by(Sort.Direction.DESC,"id"));
-        List<WordStorage> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
-
+        List<WordStorageResponseDto> wordStorageResponseDto = officialWordStorageService.getOfficialWordStoragesOrderByLike(page, principalDetails);
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.OFFICIAL, wordStorages.get(0).getStatus());
-        assertEquals("test",wordStorages.get(0).getTitle());
-        assertEquals("testDescription",wordStorages.get(0).getDescription());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertEquals("test", wordStorageResponseDto.get(0).getTitle());
+        assertEquals("testDescription", wordStorageResponseDto.get(0).getDescription());
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
 
     }
 
@@ -94,92 +98,94 @@ class OfficialWordStorageServiceTest {
     @Order(2)
     void getOfficialWordStoragesByCategory() {
         //given
-        int page = 1;
+        String category = wordStorageCategoryRepository.findById(1L).orElseThrow().getName();
         long lastArticleId = 999L;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.OFFICIAL);
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(page-1,16, Sort.by(Sort.Direction.DESC,"id"));
-        WordStorageCategory category = wordStorageCategoryRepository.findById(1L).orElseThrow();
-        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndWordStorageCategory(lastArticleId, StatusType.OFFICIAL, category, pageRequest);
+        List<WordStorageResponseDto> wordStorageResponseDto = officialWordStorageService.getOfficialWordStoragesByCategory(category, lastArticleId, principalDetails);
+        WordStorage wordStorage = wordStorageRepository.findById(wordStorageResponseDto.get(0).getId()).orElseThrow();
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.OFFICIAL, wordStorages.get(0).getStatus());
-        assertEquals(category.getName(), wordStorages.get(1).getWordStorageCategory().getName());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
+        assertEquals(wordStorage.getWordStorageCategory().getName(), category);
     }
 
     @Test
     @Order(3)
-    void getOfficialWordStoragesByTitle() {
+    void getOfficialWordStoragesByCategory_fail() {
         //given
+        String category = "존재하지 않는 카테고리";
         long lastArticleId = 999L;
-        long originalStoragesSize = wordStorageRepository.countByStatus(StatusType.OFFICIAL);
-        String search = "es";
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        makeWordStorages();
-        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
-        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndTitleContaining(lastArticleId, StatusType.OFFICIAL, search, pageRequest);
+        Exception exception = assertThrows(CategoryNotFoundException.class, () -> {
+            officialWordStorageService.getOfficialWordStoragesByCategory(category, lastArticleId, principalDetails);
+        });
 
         //then
-        assertEquals(originalStoragesSize+3, wordStorages.size());
-        assertEquals(StatusType.OFFICIAL, wordStorages.get(0).getStatus());
-        assertEquals("test", wordStorages.get(0).getTitle());
+        assertEquals("존재하지 않는 카테고리명입니다.",exception.getMessage());
     }
 
     @Test
     @Order(4)
-    void getOfficialWordStorageDetails() {
+    void getOfficialWordStoragesByTitle() {
         //given
-        List<List<String>> meaning = Arrays.asList(Arrays.asList("apple1", "apple2", "apple3"), Arrays.asList("banana1", "banana2", "banana3"));
-        List<String> word = Arrays.asList("apple", "banana");
-
-        Word words = new Word(1L, word, meaning);
-        wordRepository.save(words);
+        long lastArticleId = 999L;
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
+        String search = "test";
 
         //when
-        makeWordStorages();
-        WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL, 1L).orElseThrow();
-        Word wordList = wordRepository.findById(wordStorage.getId()).orElseThrow();
-        WordStorageDetailResponseDto dto = new WordStorageDetailResponseDto(new WordInfoDto(wordList), wordStorage);
+        List<WordStorageResponseDto> wordStorageResponseDto = officialWordStorageService.getOfficialWordStoragesByTitle(search, lastArticleId, principalDetails);
 
         //then
-        assertEquals(words.getWords(), dto.getWords().getWord());
-        assertEquals(words.getWordStorageId(), wordStorage.getId());
-        assertEquals(words.getMeanings(), dto.getWords().getMeaning());
+        assertNotNull(wordStorageResponseDto);
+        assertTrue(wordStorageResponseDto.size() <= 16);
+        assertFalse(wordStorageResponseDto.get(0).isHaveStorage());
+        assertEquals(search, wordStorageResponseDto.get(0).getTitle());
 
     }
 
     @Test
     @Order(5)
+    void getOfficialWordStorageDetails() {
+        //given
+        List<List<String>> meaning = Arrays.asList(Arrays.asList("apple1", "apple2", "apple3"), Arrays.asList("banana1", "banana2", "banana3"));
+        List<String> word = Arrays.asList("apple", "banana");
+        Word words = new Word(1L, word, meaning);
+
+        Long id = 1L;
+
+        //when
+        wordRepository.save(words);
+        WordStorageDetailResponseDto responseDto = officialWordStorageService.getOfficialWordStorageDetails(id);
+
+        //then
+        assertEquals(words.getWords(), responseDto.getWords().getWord());
+        assertEquals(words.getMeanings(), responseDto.getWords().getMeaning());
+        assertEquals(id, responseDto.getId());
+
+    }
+
+    @Test
+    @Order(6)
     void likeWordStorage() {
         //given
         long id = 1L;
-        User user = userRepository.findById(1L).orElseThrow();
-        makeWordStorages();
-        WordStorage likeWordStorage = wordStorageRepository.findById(id).orElseThrow();
-        WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(user, likeWordStorage);
-        WordStorageLike tempLike = null;
-
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         //when
-        if(wordStorageLike == null) {
-            likeWordStorage.update(likeWordStorage.getLikeCount() + 1);
-            tempLike = wordStorageLikeRepository.save(new WordStorageLike(user, likeWordStorage));
-        } else {
-            likeWordStorage.update(likeWordStorage.getLikeCount() - 1);
-            wordStorageLikeRepository.deleteByUserAndWordStorage(user, likeWordStorage);
-        }
+        String result = officialWordStorageService.likeWordStorage(id, principalDetails);
 
         //then
-        if(wordStorageLike == null){
-            assertNotNull(tempLike);
-        } else {
-            assertNull(tempLike);
-        }
-
+        assertNull(result);
 
     }
 

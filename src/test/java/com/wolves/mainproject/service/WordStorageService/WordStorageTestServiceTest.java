@@ -13,7 +13,9 @@ import com.wolves.mainproject.domain.word.storage.category.WordStorageCategoryRe
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswer;
 import com.wolves.mainproject.domain.wrong.answer.WrongAnswerRepository;
 import com.wolves.mainproject.dto.request.exam.FinishWordExamRequestDto;
+import com.wolves.mainproject.dto.request.exam.WordExamRequestDto;
 import com.wolves.mainproject.dto.response.WordInfoDto;
+import com.wolves.mainproject.dto.response.exam.FinishWordExamResponseDto;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.type.StatusType;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+
 class WordStorageTestServiceTest {
 
     @Autowired
@@ -73,24 +76,41 @@ class WordStorageTestServiceTest {
         List<String> word = Arrays.asList("apple", "banana");
 
         Word words = new Word(storageId, word, meaning);
-        makeWordStorages();
+        WordExamRequestDto requestDto = new WordExamRequestDto("스펠링", storageId);
 
         // when
         wordRepository.save(words);
-        Word savedWord = wordRepository.findById(storageId).orElseThrow();
+        Word exam = wordStorageTestService.createWordExam(requestDto);
 
         // then
-        assertNotNull(savedWord);
-        System.out.println(savedWord);
+        assertNotNull(exam);
+        assertEquals(storageId, exam.getWordStorageId());
+        assertEquals(word, exam.getWords());
+        assertEquals(meaning, exam.getMeanings());
     }
 
     @Test
     @Order(2)
+    void createWordExam_fail() {
+        // given
+        Long storageId = 14322L;
+        WordExamRequestDto requestDto = new WordExamRequestDto("스펠링", storageId);
+
+        // when
+        Exception exception = assertThrows(WordNotFoundException.class, () -> {
+            wordStorageTestService.createWordExam(requestDto);
+        });
+
+        // then
+        assertEquals("단어가 존재하지 않습니다.", exception.getMessage());
+    }
+
+    @Test
+    @Order(3)
     void finishWordExam() {
         // given
-        User user = userRepository.findById(1L).orElseThrow();
         PrincipalDetails principalDetails = new PrincipalDetails();
-        principalDetails.setUser(user);
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         List<List<String>> meaning = Arrays.asList(Arrays.asList("apple1", "apple2", "apple3"), Arrays.asList("banana1", "banana2", "banana3"));
         List<String> word = Arrays.asList("apple", "banana");
@@ -108,32 +128,31 @@ class WordStorageTestServiceTest {
                 .build();
 
         // when
-        WrongAnswer wrongAnswer = wordStorageTestService.saveAndGetWrongAnswer(finishWordExamDto, principalDetails);
-        WordStorage wordStorage = wordStorageTestService.saveAndGetWordStorage(finishWordExamDto, principalDetails);
-        wordStorageTestService.saveWordStorageWrongAnswer(wrongAnswer, wordStorage);
-
-        Long newWordStorageId = wordStorageTestService.saveWordAndGetStorageId(finishWordExamDto, wordStorage);
+        FinishWordExamResponseDto result = wordStorageTestService.finishWordExam(finishWordExamDto, principalDetails);
 
         // then
-        assertEquals(finishWordExamDto.getWrongWords(), wrongAnswer.getWrongWords());
-        assertEquals(finishWordExamDto.getTotalWords(), wrongAnswer.getTotalWords());
-        assertEquals(finishWordExamDto.getTestType(), wrongAnswer.getTestType());
-        assertEquals(StatusType.PRIVATE,wordStorage.getStatus());
-        assertNotNull(newWordStorageId);
+        assertNotNull(result.getWordStorageId());
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void getExamHistory() {
         // given
-        User user = userRepository.findById(1L).orElseThrow();
+        PrincipalDetails principalDetails = new PrincipalDetails();
+        principalDetails.setUser(userRepository.findById(1L).orElseThrow());
 
         // when
         finishWordExam();
-        List<WrongAnswerMapping> wrongAnswers = wrongAnswerRepository.customFindALlByUser(user);
+        List<WrongAnswerMapping> history = wordStorageTestService.getExamHistory(principalDetails);
 
         // then
-        assertNotNull(wrongAnswers);
+        assertNotNull(history.get(0).getId());
+        assertNotNull(history.get(0).getWrongWords());
+        assertNotNull(history.get(0).getTestType());
+        assertNotNull(history.get(0).getTotalWords());
+        assertNotNull(history.get(0).getTime());
 
     }
+
+
 }
