@@ -19,6 +19,7 @@ import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.dto.response.WordStorageResponseDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
+import com.wolves.mainproject.exception.word.WordNotAcceptableException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotAcceptableException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
