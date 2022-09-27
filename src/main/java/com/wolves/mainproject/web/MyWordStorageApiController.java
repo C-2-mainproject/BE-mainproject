@@ -89,7 +89,7 @@ public class MyWordStorageApiController {
 
     @AuthValidation
     @PutMapping("/api/user/wordstorage/id/{wordStorageId}/word")
-    public ResponseEntity<Void> updateWordInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long wordStorageId, @RequestBody UpdateWordDto dto){
+    public ResponseEntity<Void> updateWordInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long wordStorageId, @RequestBody @Valid UpdateWordDto dto, BindingResult bindingResult){
         myWordStorageService.updateWordInMyWordStorage(principalDetails.getUser(), dto, wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
