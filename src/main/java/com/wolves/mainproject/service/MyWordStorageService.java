@@ -20,6 +20,7 @@ import com.wolves.mainproject.dto.response.WordStorageResponseDto;
 import com.wolves.mainproject.dto.response.WordStorageWithNoWordDto;
 import com.wolves.mainproject.exception.category.CategoryNotFoundException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
+import com.wolves.mainproject.exception.wordStorage.WordStorageNotAcceptableException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageNotFoundException;
 import com.wolves.mainproject.exception.wordStorage.WordStorageUnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class MyWordStorageService {
     public void insertWordStorage(User user, RequestMyWordStorageDto dto){
         WordStorageCategory category = wordStorageCategoryRepository.findByName(dto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         WordStorage wordStorage = wordStorageRepository.save(dto.toWordStorage(category, user));
+        wordStorageCountValidate(wordStorageRepository.countByUser(user));
         wordRepository.save(dto.toWord(wordStorage.getId()));
     }
 
@@ -108,6 +110,13 @@ public class MyWordStorageService {
         if (user.getId() != wordStorage.getUser().getId())
             throw new WordStorageUnauthorizedException();
         return wordStorage;
+    }
+
+    private void wordStorageCountValidate(long count){
+        // @TODO : Need merge final value to one site
+        long maxWordStorage = 40;
+        if (count > maxWordStorage)
+            throw new WordStorageNotAcceptableException();
     }
 
     public List<WordStorageResponseDto> isHavingWordStorage(PrincipalDetails principalDetails, List<WordStorageMapping> wordStorages) {

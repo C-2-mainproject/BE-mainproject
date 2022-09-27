@@ -76,6 +76,7 @@ public enum ErrorCode {
     WORD_STORAGE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "W105", "해당 단어장에 대한 권한이 없습니다."),
     WORD_STORAGE_NOT_VALID(HttpStatus.BAD_REQUEST, "W106", "공인/공유 단어장에서 가져온 단어장은 Public으로 바꿀 수 없습니다."),
     OFFICIAL_WORD_STORAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "W107", "공인 단어장이 존재하지 않습니다."),
+    WORD_STORAGE_NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "W108", "단어장 보유 최대 갯수를 초과하였습니다."),
 
     // Category
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "C101", "존재하지 않는 카테고리명입니다."),
