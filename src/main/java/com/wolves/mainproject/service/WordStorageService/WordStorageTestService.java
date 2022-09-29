@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -49,7 +51,17 @@ public class WordStorageTestService {
         saveWordStorageWrongAnswer(wrongAnswer, wordStorage);
 
         Long newWordStorageId = saveWordAndGetStorageId(finishWordExamDto, wordStorage);
+        updateLastTestTime(finishWordExamDto.getWordStorageId());
+
         return new FinishWordExamResponseDto(newWordStorageId);
+    }
+
+    private void updateLastTestTime(Long wordStorageId) {
+        WordStorage originalWordStorage = wordStorageRepository.
+                findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
+
+        originalWordStorage.setLastTestAt(LocalDateTime.now());
+        wordStorageRepository.save(originalWordStorage);
     }
 
     Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
