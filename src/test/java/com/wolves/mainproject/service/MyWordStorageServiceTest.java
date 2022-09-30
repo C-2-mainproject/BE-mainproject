@@ -214,7 +214,7 @@ public class MyWordStorageServiceTest {
         // Given
         User user = userRepository.findById(1L).orElseThrow();
         // When
-        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, null).stream().toList();
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user).stream().toList();
         // Then
         assertEquals(1, wordStorages.get(0).getId());
     }
