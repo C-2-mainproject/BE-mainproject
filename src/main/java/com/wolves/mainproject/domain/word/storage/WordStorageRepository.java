@@ -21,7 +21,7 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
 
     boolean existsByUserAndOriginalWordStorage(User user, WordStorage originalWordStorage);
 
-    Page<WordStorage> findAllByUser(User user, Pageable pageable);
+    List<WordStorage> findAllByUser(User user);
     List<WordStorage> findAllByTitleContainingOrDescriptionContainingAndUser(String title, String description, User user);
 
     List<WordStorage> findByStatusOrderByLikeCountDesc(StatusType status, PageRequest pageRequest);
@@ -43,4 +43,6 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
     List<WordStorage> findByIdLessThanAndStatusAndWordStorageCategory(Long lastArticleId, StatusType aPublic, WordStorageCategory searchCategory, PageRequest pageRequest);
 
     List<WordStorage> findByIdLessThanAndStatusAndTitleContaining(Long lastArticleId, StatusType aPublic, String search, PageRequest pageRequest);
+
+    long countByStatus(StatusType official);
 }
