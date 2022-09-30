@@ -86,7 +86,7 @@ public class MyWordStorageServiceTest {
                 .build();
         WordStorageCategory category = wordStorageCategoryRepository.findByName("토익").orElseThrow();
         // When
-        wordStorage.update(dto, category);
+        wordStorage.update(dto, category, userRepository.findById(1L).orElse(null));
         WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
         // Then
         assertEquals("updateTest", wordStoragePS.getTitle());

@@ -21,7 +21,7 @@ public class CategoryConfig {
 
     @Transactional
     void insertCategory(WordStorageCategoryRepository wordStorageCategoryRepository){
-        String[] names = {"토익", "토플"};
+        String[] names = {"토익", "토플", "텝스", "초등", "중등", "고등", "회화", "기타"};
         List<WordStorageCategory> categories = createCategory(names);
 
         wordStorageCategoryRepository.saveAll(categories);

@@ -10,15 +10,18 @@ import com.wolves.mainproject.domain.word.storage.WordStorageRepository;
 import com.wolves.mainproject.dto.request.game.history.PostGameHistoryDto;
 import com.wolves.mainproject.dto.response.GameHistoryDto;
 import com.wolves.mainproject.dto.response.RankingByGameHistoryDto;
+import com.wolves.mainproject.dto.response.TicketDto;
 import com.wolves.mainproject.dto.response.WordDto;
 import com.wolves.mainproject.exception.game.history.HistoryNotFoundException;
 import com.wolves.mainproject.exception.word.WordNotFoundException;
 import com.wolves.mainproject.type.StatusType;
+import com.wolves.mainproject.util.AES256;
 import com.wolves.mainproject.util.UUIDTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,5 +55,10 @@ public class GameService {
         long wordStorageId = officialWordStorages.get(uuidTransformer.uuidToAbsIntInRange(officialWordStorages.size())).getId();
         Word word = wordRepository.findById(wordStorageId).orElseThrow(WordNotFoundException::new);
         return new WordDto(word.getWords(), word.getMeanings());
+    }
+
+    public TicketDto certificationGameUser(HttpServletRequest request){
+        String encryptCookie = new AES256().encrypt(request.getCookies()[0].getValue());
+        return new TicketDto(encryptCookie);
     }
 }
