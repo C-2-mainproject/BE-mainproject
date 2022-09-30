@@ -1,14 +1,17 @@
 package com.wolves.mainproject.web;
 
+import com.wolves.mainproject.config.auth.PrincipalDetails;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestCheckEmailDto;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestCheckNicknameDto;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestSignupDto;
 import com.wolves.mainproject.exception.CustomException;
 import com.wolves.mainproject.exception.ErrorCode;
+import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,12 +40,13 @@ public class AuthApiController {
         return new ResponseEntity<>(authService.checkNickname(dto), HttpStatus.OK);
     }
 
-//    @GetMapping("/")
-//    public void test(HttpServletRequest request, HttpServletResponse response){
-//        try{
-//            response.addHeader("cookie", request.getCookies()[0].getValue());
-//        }catch (Exception ignored){
-//            throw new CustomException(ErrorCode.LOGIN_FAILED);
-//        }
-//    }
+    @AuthValidation
+    @GetMapping("/oauth2")
+    public void test(@AuthenticationPrincipal PrincipalDetails principalDetails, HttpServletRequest request, HttpServletResponse response){
+        try{
+            response.addHeader("cookie", request.getCookies()[0].getValue());
+        }catch (Exception ignored){
+            throw new CustomException(ErrorCode.LOGIN_FAILED);
+        }
+    }
 }
