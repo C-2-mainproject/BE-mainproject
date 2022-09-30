@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface WordStorageLikeRepository extends JpaRepository<WordStorageLike, Long> {
     boolean existsByUserAndWordStorage(User user, WordStorage wordStorage);
     void deleteByUserAndWordStorage(User user, WordStorage wordStorage);
-    Page<WordStorageLikeMapping> findAllByUser(User user, Pageable pageable);
+    List<WordStorageLikeMapping> findAllByUser(User user);
 
     WordStorageLike findByUserAndWordStorage(User user, WordStorage likeWordStorage);
 }

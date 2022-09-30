@@ -76,15 +76,15 @@ public class MyWordStorageService {
     }
 
     @Transactional(readOnly = true)
-    public Page<WordStorageWithNoWordDto> findLikeWordStorageList(User user, Pageable pageable){
-        Page<WordStorageLikeMapping> mappings = wordStorageLikeRepository.findAllByUser(user, pageable);
-        return mappings.map(wordStorageLikeMapping -> new WordStorageWithNoWordDto(wordStorageLikeMapping.getWordStorage()));
+    public List<WordStorageWithNoWordDto> findLikeWordStorageList(User user){
+        List<WordStorageLikeMapping> mappings = wordStorageLikeRepository.findAllByUser(user);
+        return mappings.stream().map(wordStorageLikeMapping -> new WordStorageWithNoWordDto(wordStorageLikeMapping.getWordStorage())).toList();
     }
 
     @Transactional(readOnly = true)
-    public Page<WordStorageWithNoWordDto> findMyWordStorages(User user, Pageable pageable){
-        Page<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, pageable);
-        return wordStorages.map(WordStorageWithNoWordDto::new);
+    public List<WordStorageWithNoWordDto> findMyWordStorages(User user){
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user);
+        return wordStorages.stream().map(WordStorageWithNoWordDto::new).toList();
     }
 
     @Transactional(readOnly = true)
