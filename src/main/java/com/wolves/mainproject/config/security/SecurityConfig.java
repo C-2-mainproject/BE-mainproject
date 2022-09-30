@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 public class SecurityConfig {
     private final CorsConfig config;
     private final PrincipalOAuth2UserService principalOAuth2UserService;
-    private final OAuth2SuccessHandler successHandler;
 
     @Bean
     public CookieSerializer cookieSerializer() throws MalformedURLException {
@@ -53,7 +52,6 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(principalOAuth2UserService)
                 .and()
-                .successHandler(successHandler)
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll()
