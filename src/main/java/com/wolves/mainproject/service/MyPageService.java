@@ -55,6 +55,7 @@ public class MyPageService {
     @Transactional
     public UserResponseDto buildUserDto(User user) {
         return UserResponseDto.builder()
+                .username(user.getUsername())
                 .nickname(user.getNickname())
                 .profileImage(user.getProfileImage())
                 .build();
