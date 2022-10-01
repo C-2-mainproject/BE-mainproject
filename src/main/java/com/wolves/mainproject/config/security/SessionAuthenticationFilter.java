@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,15 +30,11 @@ public class SessionAuthenticationFilter extends UsernamePasswordAuthenticationF
             ObjectMapper om = new ObjectMapper();
             User user = om.readValue(request.getInputStream(), User.class);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                response.addCookie(cookie);
-            }
             return authenticationManager.authenticate(token);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
