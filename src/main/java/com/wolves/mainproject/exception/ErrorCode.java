@@ -93,7 +93,8 @@ public enum ErrorCode {
     // Pronounciation
     PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다."),
 
-    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다.");
+    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다."),
+    WORD_STORAGE_SYNC_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "G001", "유저 간 통신이 원활하지 않아 게임을 종료합니다.");
 
     private HttpStatus status;
     private String code;
