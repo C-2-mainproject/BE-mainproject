@@ -1,5 +1,6 @@
 package com.wolves.mainproject.handler.interceptor;
 
+import com.wolves.mainproject.exception.game.WordStorageSyncTimeoutException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ public class ThreadLock{
             wait(5000);
             if (timeEnd){
                 MyInterceptor.threadLocks.remove(this);
-                throw new RuntimeException("에러문!!");
+                throw new WordStorageSyncTimeoutException();
             }
         }
         isLocked = true;
