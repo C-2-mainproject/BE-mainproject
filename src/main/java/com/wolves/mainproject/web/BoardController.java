@@ -9,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequestMapping("/api/board")
 @RestController
@@ -19,39 +22,45 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping()
-    public ResponseEntity<?> getBoardAll(){
-        return new ResponseEntity<>(boardService.getBoardAll(), HttpStatus.OK );
+    public ResponseEntity<?> getAllBoard(){
+        return new ResponseEntity<>(boardService.getAllBoard(), HttpStatus.OK );
     }
 
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchBoard(@RequestBody BoardRequestDto boardRequestDto){
-        return new ResponseEntity<>(boardService.searchBoard(boardRequestDto),  HttpStatus.OK);
+    @GetMapping("/title")
+    public ResponseEntity<?> searchBoard(@RequestParam String search){
+        return new ResponseEntity<>(boardService.searchBoard(search),  HttpStatus.OK);
     }
 
-        @GetMapping("/id/{board_id}")
-    public ResponseEntity<?> getBoard(@PathVariable long board_id){
-        return new ResponseEntity<>(boardService.getBoardById(board_id),HttpStatus.OK);
+        @GetMapping("/id/{boardId}")
+    public ResponseEntity<?> getBoardDetails(@PathVariable long boardId){
+        return new ResponseEntity<>(boardService.getBoardDetails(boardId),HttpStatus.OK);
     }
 
     @AuthValidation
     @PostMapping()
-    public ResponseEntity<?> createBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody BoardRequestDto boardRequestDto){
-        return new ResponseEntity<>(boardService.creatBoard(principalDetails.getUser(), boardRequestDto),HttpStatus.OK);
+    public ResponseEntity<?> createBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid BoardRequestDto boardRequestDto, BindingResult bindingResult){
+        return new ResponseEntity<>(boardService.createBoard(principalDetails.getUser(), boardRequestDto),HttpStatus.OK);
     }
 
 
     @AuthValidation
-    @PutMapping("/id/{board_id}")
-    public ResponseEntity<?> updateBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id, @RequestBody BoardRequestDto boardRequestDto){
-        return new ResponseEntity<>(boardService.updateBoard(principalDetails.getUser(),board_id, boardRequestDto), HttpStatus.OK);
+    @PutMapping("/id/{boardId}")
+    public ResponseEntity<?> updateBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId, @RequestBody @Valid BoardRequestDto boardRequestDto, BindingResult bindingResult){
+        return new ResponseEntity<>(boardService.updateBoard(principalDetails.getUser(),boardId, boardRequestDto), HttpStatus.OK);
     }
 
 
     @AuthValidation
-    @DeleteMapping("/id/{board_id}")
-    public ResponseEntity<?> deletedBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long board_id){
-        return new ResponseEntity<>(boardService.deletedBoard(principalDetails.getUser(), board_id),HttpStatus.OK);
+    @DeleteMapping("/id/{boardId}")
+    public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long boardId){
+        boardService.deleteBoard(principalDetails.getUser(), boardId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @AuthValidation
+    @GetMapping("/user/like")
+    public  ResponseEntity<?> findLikeBoardList(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(boardService.findLikeBoardList(principalDetails.getUser()),HttpStatus.OK);
+    }
 }

@@ -16,6 +16,7 @@ public class WordStorageWithNoWordDto {
     private String title;
     private String description;
     private String category;
+    private String nickname;
     private long likeCount;
     private boolean isPublic;
     private LocalDateTime createAt;
@@ -31,6 +32,7 @@ public class WordStorageWithNoWordDto {
         this.title = wordStorage.getTitle();
         this.description = wordStorage.getDescription();
         this.category = wordStorage.getWordStorageCategory().getName();
+        this.nickname = wordStorage.getUser().getNickname();
         this.likeCount = wordStorage.getLikeCount();
         this.isPublic = wordStorage.getStatus().getValue();
         this.createAt = wordStorage.getCreateAt();

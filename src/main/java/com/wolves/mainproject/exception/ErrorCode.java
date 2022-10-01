@@ -36,6 +36,7 @@ public enum ErrorCode {
     NICKNAME_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R004", "닉네임 길이가 너무 깁니다."),
     EMAIL_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "R005", "이메일 길이가 너무 깁니다."),
     GENDER_CONFLICT(HttpStatus.CONFLICT, "R006", "성별 형식이 올바르지 않습니다."),
+    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "R007", "지원하는 OAuth가 아닙니다."),
 
     // Board
     BOARD_PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "해당 게시글을 찾을 수 없습니다."),
@@ -73,6 +74,9 @@ public enum ErrorCode {
     WORD_STORAGE_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W103", "단어장 설명이 너무 깁니다."),
     WORD_STORAGE_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "W104", "존재하지 않는 단어장 타입입니다."),
     WORD_STORAGE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "W105", "해당 단어장에 대한 권한이 없습니다."),
+    WORD_STORAGE_NOT_VALID(HttpStatus.BAD_REQUEST, "W106", "공인/공유 단어장에서 가져온 단어장은 Public으로 바꿀 수 없습니다."),
+    OFFICIAL_WORD_STORAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "W107", "공인 단어장이 존재하지 않습니다."),
+    WORD_STORAGE_NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "W108", "단어장 보유 최대 갯수를 초과하였습니다."),
 
     // Category
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "C101", "존재하지 않는 카테고리명입니다."),
@@ -81,6 +85,7 @@ public enum ErrorCode {
     WORD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W201", "단어(영)가 너무 깁니다."),
     WORD_DESCRIPTION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "W202", "단어(영) 설명이 너무 깁니다."),
     WORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "W203", "단어가 존재하지 않습니다."),
+    WORD_NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "W204", "단어/뜻은 200개 이상 입력할 수 없습니다."),
 
     // Meaning
     MEANING_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "M001", "단어(뜻)가 너무 깁니다."),
@@ -88,7 +93,8 @@ public enum ErrorCode {
     // Pronounciation
     PRONONCIATION_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "P001", "단어(품사)가 너무 깁니다."),
 
-    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다.");
+    HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "H001", "히스토리가 존재하지 않습니다."),
+    WORD_STORAGE_SYNC_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "G001", "유저 간 통신이 원활하지 않아 게임을 종료합니다.");
 
     private HttpStatus status;
     private String code;

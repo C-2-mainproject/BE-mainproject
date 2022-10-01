@@ -19,6 +19,7 @@ import java.io.Serializable;
 @SuperBuilder
 @Getter
 @Entity
+@Table(name = "user")
 public class User extends Timestamped implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,17 +31,11 @@ public class User extends Timestamped implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = true, length = 30, unique = true)
     private String nickname;
 
     @Column(nullable = false, name = "profile_image")
     private String profileImage;
-
-    @Column(nullable = false, name = "age_group")
-    private int ageGroup;
-
-    @Column(nullable = false, length = 2)
-    private String gender;
 
     @Column(length = 20)
     private String provider;

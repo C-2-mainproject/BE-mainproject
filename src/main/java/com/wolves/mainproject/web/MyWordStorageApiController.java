@@ -20,6 +20,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -32,6 +34,13 @@ public class MyWordStorageApiController {
     @PostMapping("/api/user/wordstorage")
     public ResponseEntity<Void> createWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid RequestMyWordStorageDto dto, BindingResult bindingResult){
         myWordStorageService.insertWordStorage(principalDetails.getUser(), dto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @AuthValidation
+    @DeleteMapping("/api/user/wordstorage/id/{wordStorageId}")
+    public ResponseEntity<Void> deleteWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        myWordStorageService.deleteWordStorage(principalDetails.getUser(), wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -58,14 +67,14 @@ public class MyWordStorageApiController {
 
     @AuthValidation
     @GetMapping("/api/user/wordstorage/like")
-    public ResponseEntity<Page<WordStorageWithNoWordDto>> findLikeWordStorageList(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
-        return new ResponseEntity<>(myWordStorageService.findLikeWordStorageList(principalDetails.getUser(), pageable), HttpStatus.OK);
+    public ResponseEntity<List<WordStorageWithNoWordDto>> findLikeWordStorageList(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(myWordStorageService.findLikeWordStorageList(principalDetails.getUser()), HttpStatus.OK);
     }
 
     @AuthValidation
     @GetMapping("/api/user/wordstorage/my")
-    public ResponseEntity<Page<WordStorageWithNoWordDto>> findMyWordStorages(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
-        return new ResponseEntity<>(myWordStorageService.findMyWordStorages(principalDetails.getUser(), pageable), HttpStatus.OK);
+    public ResponseEntity<List<WordStorageWithNoWordDto>> findMyWordStorages(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(myWordStorageService.findMyWordStorages(principalDetails.getUser()), HttpStatus.OK);
     }
 
     @AuthValidation
@@ -82,7 +91,7 @@ public class MyWordStorageApiController {
 
     @AuthValidation
     @PutMapping("/api/user/wordstorage/id/{wordStorageId}/word")
-    public ResponseEntity<Void> updateWordInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long wordStorageId, @RequestBody UpdateWordDto dto){
+    public ResponseEntity<Void> updateWordInMyWordStorage(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable long wordStorageId, @RequestBody @Valid UpdateWordDto dto, BindingResult bindingResult){
         myWordStorageService.updateWordInMyWordStorage(principalDetails.getUser(), dto, wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

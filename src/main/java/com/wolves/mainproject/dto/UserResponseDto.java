@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponseDto {
 
+    private String username;
     private String nickname;
     private String profileImage;
-    private Integer ageGroup;
-    private String gender;
 
 }

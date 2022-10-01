@@ -7,10 +7,14 @@ import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import com.wolves.mainproject.dto.request.my.word.storage.PostBookmarkedWordStorageDto;
 import com.wolves.mainproject.dto.request.my.word.storage.RequestMyWordStorageDto;
 import com.wolves.mainproject.dto.request.my.word.storage.UpdateMyWordStorageStatusDto;
+import com.wolves.mainproject.exception.CustomException;
+import com.wolves.mainproject.exception.ErrorCode;
+import com.wolves.mainproject.exception.wordStorage.WordStorageNotValidException;
 import com.wolves.mainproject.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,6 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
+@Setter
 @Entity
 @Table(name = "word_storage", indexes = {@Index(name = "status_index", columnList = "status")})
 public class WordStorage extends Timestamped {
@@ -63,9 +68,6 @@ public class WordStorage extends Timestamped {
     @JoinColumn(name = "original_wordstorage")
     private WordStorage originalWordStorage;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalWordStorage")
-    private List<WordStorage> broughtWordStorage;
-
     public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, StatusType status) {
         this.title = wordStorage.getTitle();
         this.description = wordStorage.getDescription();
@@ -76,15 +78,17 @@ public class WordStorage extends Timestamped {
         this.originalWordStorage = wordStorage;
     }
 
-    public void update(RequestMyWordStorageDto dto, WordStorageCategory category){
+    public void update(RequestMyWordStorageDto dto, WordStorageCategory category, User user){
         this.title = dto.getTitle();
         this.description = dto.getDescription();
-        this.status = StatusType.findByBoolean(dto.isStatus());
+        this.status = StatusType.getStatusByUser(dto.isStatus(), user);
         this.wordStorageCategory = category;
     }
 
-    public void update(UpdateMyWordStorageStatusDto dto){
-        this.status = StatusType.findByBoolean(dto.isStatus());
+    public void update(UpdateMyWordStorageStatusDto dto, WordStorage wordStorage){
+        if (wordStorage.getOriginalWordStorage() != null)
+            throw new WordStorageNotValidException();
+        this.status = StatusType.getStatus(dto.isStatus());
     }
     public void update(PostBookmarkedWordStorageDto dto) { this.isBookmarked = dto.isStatus(); }
 

@@ -20,6 +20,8 @@ bin/
 ### Custom Ignore ###
 application-dev.yml
 application.yml
+.github/
+.ebextensions/
 
 ### IntelliJ IDEA ###
 .idea

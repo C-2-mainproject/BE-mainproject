@@ -27,9 +27,9 @@ public class WordStorageTestController {
     @AuthValidation
     @PostMapping("/api/user/wordstorage/test")
     public ResponseEntity<Object> createWordProblems(@RequestBody WordExamRequestDto wordExamDto,
-                                     @AuthenticationPrincipal PrincipalDetails principalDetails
+                                                     @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        return ResponseEntity.ok(wordStorageTestService.createWordExam(wordExamDto, principalDetails));
+        return ResponseEntity.ok(wordStorageTestService.createWordExam(wordExamDto));
 
     }
 

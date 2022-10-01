@@ -86,7 +86,7 @@ public class MyWordStorageServiceTest {
                 .build();
         WordStorageCategory category = wordStorageCategoryRepository.findByName("토익").orElseThrow();
         // When
-        wordStorage.update(dto, category);
+        wordStorage.update(dto, category, userRepository.findById(1L).orElse(null));
         WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
         // Then
         assertEquals("updateTest", wordStoragePS.getTitle());
@@ -140,7 +140,7 @@ public class MyWordStorageServiceTest {
         long requestId = 1L;
         WordStorage wordStorage = wordStorageRepository.findById(requestId).orElseThrow();
         // When
-        wordStorage.update(dto);
+        wordStorage.update(dto, wordStorage);
         WordStorage wordStoragePS = wordStorageRepository.save(wordStorage);
         // Then
         assertEquals(StatusType.PUBLIC, wordStoragePS.getStatus());
@@ -214,7 +214,7 @@ public class MyWordStorageServiceTest {
         // Given
         User user = userRepository.findById(1L).orElseThrow();
         // When
-        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user, null).stream().toList();
+        List<WordStorage> wordStorages = wordStorageRepository.findAllByUser(user).stream().toList();
         // Then
         assertEquals(1, wordStorages.get(0).getId());
     }

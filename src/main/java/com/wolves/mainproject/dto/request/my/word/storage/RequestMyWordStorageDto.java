@@ -1,5 +1,6 @@
 package com.wolves.mainproject.dto.request.my.word.storage;
 
+import com.wolves.mainproject.domain.dynamo.word.Word;
 import com.wolves.mainproject.domain.user.User;
 import com.wolves.mainproject.domain.word.storage.WordStorage;
 import com.wolves.mainproject.domain.word.storage.category.WordStorageCategory;
@@ -7,6 +8,8 @@ import com.wolves.mainproject.exception.ErrorCode;
 import com.wolves.mainproject.handler.aop.annotation.domain.LengthValidation;
 import com.wolves.mainproject.type.StatusType;
 import lombok.*;
+
+import java.util.ArrayList;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +31,15 @@ public class RequestMyWordStorageDto {
                 .description(description)
                 .wordStorageCategory(category)
                 .user(user)
-                .status(StatusType.findByBoolean(status))
+                .status(StatusType.getStatusByUser(status, user))
+                .build();
+    }
+
+    public Word toWord(long wordStorageId){
+        return Word.builder()
+                .wordStorageId(wordStorageId)
+                .words(new ArrayList<>())
+                .meanings(new ArrayList<>(new ArrayList<>()))
                 .build();
     }
 }

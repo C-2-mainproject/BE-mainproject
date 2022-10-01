@@ -38,6 +38,7 @@ public class BoardComment extends Timestamped {
     private Board board;
 
     @JoinColumn(name = "refer_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private BoardComment refer;
 
@@ -50,4 +51,5 @@ public class BoardComment extends Timestamped {
     public void delete() {
         this.status = false;
     }
+
 }

@@ -21,8 +21,6 @@ public class AuthServiceTest {
                 .password("1234")
                 .nickname("nickname")
                 .profileImage("image.png")
-                .ageGroup(10)
-                .gender("남")
                 .build();
         return dto.toUser();
     }

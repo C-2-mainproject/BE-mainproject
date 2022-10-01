@@ -9,11 +9,13 @@ import lombok.*;
 @Setter
 @Builder
 public class RankingByGameHistoryDto {
-    private String username;
+    private String nickname;
+    private String profileImage;
     private long winCount;
 
     public RankingByGameHistoryDto(GameHistory gameHistory){
-        this.username = gameHistory.getUser().getUsername();
+        this.nickname = gameHistory.getUser().getNickname();
+        this.profileImage = gameHistory.getUser().getProfileImage();
         this.winCount = gameHistory.getWinCount();
     }
 }

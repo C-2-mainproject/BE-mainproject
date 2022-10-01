@@ -39,65 +39,56 @@ public class OfficialWordStorageService {
     private final MyWordStorageService myWordStorageService;
 
     @Transactional
-    public List<WordStorageResponseDto> getOfficialWordStorageOrderByLike(int page,
-                                                                          @AuthenticationPrincipal PrincipalDetails principalDetails
+    public List<WordStorageResponseDto> getOfficialWordStoragesOrderByLike(int page,
+                                                                           @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
+        PageRequest pageRequest = PageRequest.of(page-1,16, Sort.by(Sort.Direction.DESC,"id"));
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
-
-        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        List<WordStorage> wordStorages = wordStorageRepository.findByStatusOrderByLikeCountDesc(StatusType.OFFICIAL, pageRequest);
+        return myWordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
     }
 
 
     @Transactional
-    public List<WordStorageResponseDto> getOfficialWordStorageByCategory(String category, int page,
-                                                                         @AuthenticationPrincipal PrincipalDetails principalDetails
+    public List<WordStorageResponseDto> getOfficialWordStoragesByCategory(String category, Long lastArticleId,
+                                                                          @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
-
+        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
         WordStorageCategory searchCategory = wordStorageCategoryRepository.findByName(category)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndWordStorageCategory(StatusType.OFFICIAL, searchCategory, pageRequest);
-
-        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndWordStorageCategory(lastArticleId, StatusType.OFFICIAL, searchCategory, pageRequest);
+        return myWordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
     }
 
     @Transactional
-    public List<WordStorageResponseDto> getOfficialWordStorageByTitle(String search, int page,
-                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails
+    public List<WordStorageResponseDto> getOfficialWordStoragesByTitle(String search, Long lastArticleId,
+                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page-1,10, Sort.by(Sort.Direction.DESC,"id"));
+        PageRequest pageRequest = PageRequest.of(0,16, Sort.by(Sort.Direction.DESC,"id"));
+        List<WordStorage> wordStorages = wordStorageRepository.findByIdLessThanAndStatusAndTitleContaining(lastArticleId, StatusType.OFFICIAL, search, pageRequest);
 
-        List<WordStorageMapping> wordStorages = wordStorageRepository.findByStatusAndTitleContaining(StatusType.OFFICIAL, search, pageRequest);
-
-        return myWordStorageService.isHavingWordStorage(principalDetails, wordStorages);
+        return myWordStorageService.setHaveStorageFlags(principalDetails, wordStorages);
     }
 
     @Transactional
-    public WordStorageDetailResponseDto getOfficialWordStorageDetails(Long id, PrincipalDetails principalDetails) {
+    public WordStorageDetailResponseDto getOfficialWordStorageDetails(Long id) {
         WordStorage wordStorage = wordStorageRepository.findByStatusAndId(StatusType.OFFICIAL, id)
                 .orElseThrow(WordStorageNotFoundException::new);
-
         Word wordList = wordRepository.findById(wordStorage.getId())
                 .orElseThrow(WordNotFoundException::new);
-
 
         return new WordStorageDetailResponseDto(new WordInfoDto(wordList), wordStorage);
     }
 
     @Transactional
     public String likeWordStorage(Long id, PrincipalDetails principalDetails) {
-        WordStorage likeWordStorage = wordStorageRepository.findById(id)
-                .orElseThrow(WordStorageNotFoundException::new);
+        WordStorage likeWordStorage = wordStorageRepository.findById(id).orElseThrow(WordStorageNotFoundException::new);
         WordStorageLike wordStorageLike = wordStorageLikeRepository.findByUserAndWordStorage(principalDetails.getUser(), likeWordStorage);
 
         if(wordStorageLike == null) {
             likeWordStorage.update(likeWordStorage.getLikeCount() + 1);
-
-            WordStorageLike newWordStorageLike = new WordStorageLike(principalDetails.getUser(), likeWordStorage);
-            wordStorageLikeRepository.save(newWordStorageLike);
+            wordStorageLikeRepository.save(new WordStorageLike(principalDetails.getUser(), likeWordStorage));
 
             return null;
         }
@@ -110,33 +101,30 @@ public class OfficialWordStorageService {
     }
 
     @Transactional
-    public String putInMyWordStorage(Long id, PrincipalDetails principalDetails) {
-        long newWordStorageId = saveWordStorage(id, principalDetails);
-
-        saveWord(id, newWordStorageId);
+    public String copyToMyWordStorage(Long originalWordStorageId, PrincipalDetails principalDetails) {
+        long copiedWordStorageId = copyWordStorage(originalWordStorageId, principalDetails);
+        copyWord(originalWordStorageId, copiedWordStorageId);
 
         return null;
     }
 
-    private void saveWord(long id, long newWordStorageId) {
-        Word word = wordRepository.findById(id)
-                .orElseThrow(WordNotFoundException::new);
-
-        word.setWordStorageId(newWordStorageId);
-
-        wordRepository.save(word);
-    }
-
-    private long saveWordStorage(Long id, PrincipalDetails principalDetails) {
+    private long copyWordStorage(Long originalWordStorageId, PrincipalDetails principalDetails) {
         User user = principalDetails.getUser();
-        WordStorage wordStorage = wordStorageRepository.findById(id)
+        WordStorage originalWordStorage = wordStorageRepository.findById(originalWordStorageId)
                 .orElseThrow(WordStorageNotFoundException::new);
-        WordStorageCategory category = wordStorageCategoryRepository.findByName(wordStorage.getWordStorageCategory().getName())
+        WordStorageCategory category = wordStorageCategoryRepository.findByName(originalWordStorage.getWordStorageCategory().getName())
                 .orElseThrow(CategoryNotFoundException::new);
 
-        WordStorage newPrivateWordStorage = new WordStorage(user, wordStorage, category, StatusType.PRIVATE);
+        WordStorage copiedWordStorage = new WordStorage(user, originalWordStorage, category, StatusType.PRIVATE);
 
-        return wordStorageRepository.save(newPrivateWordStorage).getId();
+        return wordStorageRepository.save(copiedWordStorage).getId();
+    }
+
+    private void copyWord(long originalWordStorageId, long copiedWordStorageId) {
+        Word word = wordRepository.findById(originalWordStorageId).orElseThrow(WordNotFoundException::new);
+        word.setWordStorageId(copiedWordStorageId);
+
+        wordRepository.save(word);
     }
 
 

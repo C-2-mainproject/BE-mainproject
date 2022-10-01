@@ -1,6 +1,7 @@
 package com.wolves.mainproject.domain.word.storage;
 
 
+import com.wolves.mainproject.domain.word.storage.like.WordStorageLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,15 +21,17 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
 
     boolean existsByUserAndOriginalWordStorage(User user, WordStorage originalWordStorage);
 
-    Page<WordStorage> findAllByUser(User user, Pageable pageable);
+    List<WordStorage> findAllByUser(User user);
     List<WordStorage> findAllByTitleContainingOrDescriptionContainingAndUser(String title, String description, User user);
 
-    List<WordStorageMapping> findByStatusOrderByLikeCountDesc(StatusType status, PageRequest pageRequest);
+    List<WordStorage> findByStatusOrderByLikeCountDesc(StatusType status, PageRequest pageRequest);
 
-    List<WordStorageMapping> findByStatusAndWordStorageCategory(StatusType status, WordStorageCategory searchCategory, PageRequest pageRequest);
-    List<WordStorageMapping> findByStatusAndTitleContaining(StatusType status, String title, PageRequest pageRequest);
 
     Optional<WordStorage> findByStatusAndId(StatusType status, Long id);
+
+    List<WordStorageMapping> findByStatus(StatusType status);
+
+    Long countByUser(User user);
 
     @Query(value = "SELECT word_storage_category.name as categoryName, COUNT(*) " +
             "AS count FROM word_storage " +
@@ -36,4 +39,10 @@ public interface WordStorageRepository extends JpaRepository<WordStorage, Long> 
             "on word_storage_category.id = word_storage.category_id " +
             "GROUP BY word_storage_category.name", nativeQuery = true)
     List<CategoryStatisticMapping> countByCategory();
+
+    List<WordStorage> findByIdLessThanAndStatusAndWordStorageCategory(Long lastArticleId, StatusType aPublic, WordStorageCategory searchCategory, PageRequest pageRequest);
+
+    List<WordStorage> findByIdLessThanAndStatusAndTitleContaining(Long lastArticleId, StatusType aPublic, String search, PageRequest pageRequest);
+
+    long countByStatus(StatusType official);
 }
