@@ -16,10 +16,14 @@ public class WordStorageResponseDto {
     private String title;
     private String description;
     private boolean haveStorage;
+    private long likeCount;
+    private String category;
 
     public WordStorageResponseDto(WordStorage wordStorage) {
         this.id = wordStorage.getId();
         this.title = wordStorage.getTitle();
         this.description = wordStorage.getDescription();
+        this.likeCount = wordStorage.getLikeCount();
+        this.category = wordStorage.getWordStorageCategory().getName();
     }
 }
