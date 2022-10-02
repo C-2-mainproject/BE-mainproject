@@ -8,7 +8,7 @@ on:
 env:
   S3_BUCKET_NAME: dong-example
   CODE_DEPLOY_APPLICATION_NAME: ec2-code-deploy
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: dong-server
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: auto-scaling-server
 
 jobs:
   build:
@@ -62,5 +62,5 @@ jobs:
           aws deploy create-deployment \
           --application-name ec2-code-deploy \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name dong-server \
+          --deployment-group-name auto-scaling-server \
           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
