@@ -46,7 +46,7 @@ public class MyWordStorageApiController {
 
     @AuthValidation
     @PutMapping("/api/user/wordstorage/id/{wordStorageId}")
-    public ResponseEntity<Void> updateWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody RequestMyWordStorageDto dto){
+    public ResponseEntity<Void> updateWordStorage(@PathVariable long wordStorageId, @AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid RequestMyWordStorageDto dto, BindingResult bindingResult){
         myWordStorageService.updateWordStorage(principalDetails.getUser(), dto, wordStorageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
