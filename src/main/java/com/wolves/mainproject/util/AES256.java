@@ -1,5 +1,9 @@
 package com.wolves.mainproject.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -12,10 +16,15 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+@Component
 public class AES256 implements Crypto{
     public static String alg = "AES/CBC/PKCS5Padding";
-    private final String key = "01234567890123456789012345678901";
-    private final String iv = key.substring(0, 16); // 16byte
+
+    @Value("${auth.key}")
+    private String key;
+
+    @Value("${auth.iv}")
+    private String iv;
 
     public String encrypt(String text)  {
         Cipher cipher = getCipher();
