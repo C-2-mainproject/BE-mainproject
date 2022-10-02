@@ -30,6 +30,7 @@ public class GameService {
     private final GameHistoryRepository gameHistoryRepository;
     private final WordStorageRepository wordStorageRepository;
     private final WordRepository wordRepository;
+    private final AES256 aes256;
 
     @Transactional(readOnly = true)
     public GameHistoryDto findMyRecord(User user){
@@ -58,7 +59,7 @@ public class GameService {
     }
 
     public TicketDto certificationGameUser(HttpServletRequest request){
-        String encryptCookie = new AES256().encrypt(request.getCookies()[0].getValue());
+        String encryptCookie = aes256.encrypt(request.getCookies()[0].getValue());
         return new TicketDto(encryptCookie);
     }
 }
