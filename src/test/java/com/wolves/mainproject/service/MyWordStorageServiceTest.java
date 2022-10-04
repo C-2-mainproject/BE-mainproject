@@ -196,7 +196,7 @@ public class MyWordStorageServiceTest {
         wordStorageLikeRepository.save(wordStorageLike);
         Pageable pageable = null;
         // When
-        List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user, pageable).stream().toList();
+        List<WordStorageLikeMapping> wordStorageLikeMappings = wordStorageLikeRepository.findAllByUser(user).stream().toList();
         List<WordStorage> wordStorages = new ArrayList<>();
         assert wordStorageLikeMappings != null;
         wordStorageLikeMappings.forEach(mapping -> wordStorages.add(mapping.getWordStorage()));

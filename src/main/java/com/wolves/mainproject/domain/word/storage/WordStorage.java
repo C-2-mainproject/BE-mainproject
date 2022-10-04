@@ -80,6 +80,8 @@ public class WordStorage extends Timestamped {
     }
 
     public void update(RequestMyWordStorageDto dto, WordStorageCategory category, User user){
+        if (this.getOriginalWordStorage() != null)
+            throw new WordStorageNotValidException();
         this.title = dto.getTitle();
         this.description = dto.getDescription();
         this.status = StatusType.getStatusByUser(dto.isStatus(), user);
