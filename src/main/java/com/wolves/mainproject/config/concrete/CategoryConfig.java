@@ -13,7 +13,7 @@ import java.util.List;
  * @Description : 초기 실행 시 Category 강제 주입
  * @Author : 장동하
  **/
-@Component
+
 public class CategoryConfig {
     public CategoryConfig(WordStorageCategoryRepository wordStorageCategoryRepository){
         insertCategory(wordStorageCategoryRepository);

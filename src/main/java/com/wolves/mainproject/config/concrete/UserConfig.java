@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Description : 초기 실행 시 User, Admin 강제 주입
  * @Author : 장동하
  **/
-@Component
+
 public class UserConfig {
 
     public UserConfig(UserRepository userRepository){
