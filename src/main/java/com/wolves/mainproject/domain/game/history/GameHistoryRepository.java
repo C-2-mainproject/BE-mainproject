@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GameHistoryRepository extends JpaRepository<GameHistory, Long> {
-    @Query(value = "SELECT *, rank() over(order by win_count desc) as ranking from game_history limit 10", nativeQuery = true)
+    @Query(value = "SELECT *, rank() over(order by win_count desc) as ranking from game_history limit 8", nativeQuery = true)
     List<GameHistory> findAllByRanking();
 
     Optional<GameHistory> findByUser(User user);
