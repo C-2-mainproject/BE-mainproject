@@ -82,7 +82,10 @@ public class WordStorageTestService {
         WordStorageCategory wordStorageCategory = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
                 .orElseThrow(WordStorageNotFoundException::new).getWordStorageCategory();
 
-        String newWordStorageTitle = finishWordExamDto.getWordStorageId() + "번 단어장의 오답노트";
+        WordStorage originalWordStorage = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
+                .orElseThrow(WordStorageNotFoundException::new);
+
+        String newWordStorageTitle = originalWordStorage.getTitle() + "의 오답노트";
         WordStorage newWordStorage = finishWordExamDto.toWordStorage(newWordStorageTitle, wordStorageCategory, principalDetails);
 
         wordStorageRepository.save(newWordStorage);
