@@ -12,6 +12,6 @@ public class RedirectController {
     public String redirect(HttpServletRequest request, HttpServletResponse response){
         response.addHeader("Set-Cookie", request.getCookies()[0].getValue());
 
-        return "redirect:https://ildanenglish.com/";
+        return "redirect:http://localhost:3000";
     }
 }
