@@ -14,6 +14,7 @@ import com.wolves.mainproject.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -26,6 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
+@Setter
 @Entity
 @Table(name = "word_storage", indexes = {@Index(name = "status_index", columnList = "status")})
 public class WordStorage extends Timestamped {
@@ -65,9 +67,6 @@ public class WordStorage extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_wordstorage")
     private WordStorage originalWordStorage;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalWordStorage")
-    private List<WordStorage> broughtWordStorage;
 
     public WordStorage(User user, WordStorage wordStorage, WordStorageCategory category, StatusType status) {
         this.title = wordStorage.getTitle();

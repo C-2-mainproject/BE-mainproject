@@ -40,14 +40,17 @@ public class Board extends Timestamped {
     @ManyToOne
     private User user;
 
+    @Column(nullable = false)
+    private boolean isLike = false;
+
 
     public void update(BoardRequestDto boardRequestDto){
         this.title = boardRequestDto.getTitle();
     }
-    public void getLikeCount(long boardlike){
-        this.likeCount= boardlike;
-    }
 
+    public void bringLikeCount(long boardlike){
+        this.likeCount = boardlike;
+    }
     public void getCommentCount(long commentCount){
         this.commentCount= commentCount;
     }

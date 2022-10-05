@@ -1,8 +1,8 @@
 package com.wolves.mainproject.web;
 
 import com.wolves.mainproject.config.auth.PrincipalDetails;
-import com.wolves.mainproject.dto.request.PasswordDto;
 import com.wolves.mainproject.dto.request.UserDto;
+import com.wolves.mainproject.handler.aop.annotation.AdminValidation;
 import com.wolves.mainproject.handler.aop.annotation.AuthValidation;
 import com.wolves.mainproject.service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,9 @@ public class MyPageController {
     private final MyPageService myPageService;
 
     @AuthValidation
-    @PostMapping("/api/user")
-    public ResponseEntity<?> getUserToPassword(@RequestBody PasswordDto requestDto,
-                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return myPageService.getUserToPassword(requestDto, principalDetails);
+    @GetMapping("/api/user")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return myPageService.getUserInfo(principalDetails);
     }
 
     @AuthValidation
@@ -32,22 +31,21 @@ public class MyPageController {
     }
 
     @AuthValidation
-    @PutMapping("/api/user/password")
-    public ResponseEntity<?> updatePassword(@RequestBody PasswordDto requestDto,
-                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return myPageService.updatePassword(requestDto, principalDetails);
-    }
-
-    @AuthValidation
     @DeleteMapping("/api/user")
-    public ResponseEntity<?> deleteUser(@RequestBody PasswordDto requestDto,
-                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
-        return myPageService.deleteUser(requestDto, principalDetails);
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return myPageService.deleteUser(principalDetails);
     }
 
     @AuthValidation
     @GetMapping("/api/user/question")
     public ResponseEntity<?> getUserQuestion(@AuthenticationPrincipal PrincipalDetails principalDetails){
         return new ResponseEntity<>(myPageService.getUserQuestion(principalDetails), HttpStatus.OK);
+    }
+
+
+    @AdminValidation
+    @GetMapping("/api/admin/question")
+    public ResponseEntity<?> getAdminQuestion(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return new ResponseEntity<>(myPageService.getAdminQuestion(principalDetails), HttpStatus.OK);
     }
 }

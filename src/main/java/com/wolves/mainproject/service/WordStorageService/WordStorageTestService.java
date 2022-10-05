@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -34,7 +36,7 @@ public class WordStorageTestService {
     private final WordStorageWrongAnswerRepository wordStorageWrongAnswerRepository;
 
     @Transactional
-    public Word createWordExam(WordExamRequestDto wordExamDto, PrincipalDetails principalDetails) {
+    public Word createWordExam(WordExamRequestDto wordExamDto) {
 
         return wordRepository.findById(wordExamDto.getWordStorageId())
                 .orElseThrow(WordNotFoundException::new);
@@ -47,22 +49,27 @@ public class WordStorageTestService {
         WrongAnswer wrongAnswer = saveAndGetWrongAnswer(finishWordExamDto, principalDetails);
         WordStorage wordStorage = saveAndGetWordStorage(finishWordExamDto, principalDetails);
         saveWordStorageWrongAnswer(wrongAnswer, wordStorage);
+
         Long newWordStorageId = saveWordAndGetStorageId(finishWordExamDto, wordStorage);
+        updateLastTestTime(finishWordExamDto.getWordStorageId());
 
         return new FinishWordExamResponseDto(newWordStorageId);
     }
 
-    private Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
-        Word word = Word.builder()
-                .wordStorageId(newWordStorage.getId())
-                .words(finishWordExamDto.getCollectionWrongWord().getWord())
-                .meanings(finishWordExamDto.getCollectionWrongWord().getMeaning())
-                        .build();
+    private void updateLastTestTime(Long wordStorageId) {
+        WordStorage originalWordStorage = wordStorageRepository.
+                findById(wordStorageId).orElseThrow(WordStorageNotFoundException::new);
 
+        originalWordStorage.setLastTestAt(LocalDateTime.now());
+        wordStorageRepository.save(originalWordStorage);
+    }
+
+    Long saveWordAndGetStorageId(FinishWordExamRequestDto finishWordExamDto, WordStorage newWordStorage) {
+        Word word = finishWordExamDto.toWord(newWordStorage, finishWordExamDto);
         return wordRepository.save(word).getWordStorageId();
     }
 
-    private void saveWordStorageWrongAnswer(WrongAnswer wrongAnswer, WordStorage newWordStorage) {
+    void saveWordStorageWrongAnswer(WrongAnswer wrongAnswer, WordStorage newWordStorage) {
         WordStorageWrongAnswer wordStorageWrongAnswer = WordStorageWrongAnswer.builder()
                 .wrongAnswer(wrongAnswer)
                 .wordStorage(newWordStorage)
@@ -71,36 +78,22 @@ public class WordStorageTestService {
         wordStorageWrongAnswerRepository.save(wordStorageWrongAnswer);
     }
 
-    private WordStorage saveAndGetWordStorage(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
-        // 기존 wordStorageCategory 확인을 위한 조회
+    WordStorage saveAndGetWordStorage(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
         WordStorageCategory wordStorageCategory = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
                 .orElseThrow(WordStorageNotFoundException::new).getWordStorageCategory();
 
-        String newTitle = finishWordExamDto.getWordStorageId() + "번 단어장의 오답노트";
+        WordStorage originalWordStorage = wordStorageRepository.findById(finishWordExamDto.getWordStorageId())
+                .orElseThrow(WordStorageNotFoundException::new);
 
-        // 새 wordStorage 저장
-        WordStorage newWordStorage = WordStorage.builder()
-                .wordStorageCategory(wordStorageCategory)
-                .title(newTitle)
-                .description(newTitle)
-                .status(StatusType.PRIVATE)
-                .user(principalDetails.getUser())
-                .likeCount(0)
-                .build();
+        String newWordStorageTitle = originalWordStorage.getTitle() + "의 오답노트";
+        WordStorage newWordStorage = finishWordExamDto.toWordStorage(newWordStorageTitle, wordStorageCategory, principalDetails);
 
         wordStorageRepository.save(newWordStorage);
         return newWordStorage;
     }
 
-    private WrongAnswer saveAndGetWrongAnswer(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
-        WrongAnswer wrongAnswer = WrongAnswer.builder()
-                .testType(finishWordExamDto.getTestType())
-                .totalWords(finishWordExamDto.getTotalWords())
-                .wrongWords(finishWordExamDto.getWrongWords())
-                .time(finishWordExamDto.getTime())
-                .user(principalDetails.getUser())
-                .build();
-
+    WrongAnswer saveAndGetWrongAnswer(FinishWordExamRequestDto finishWordExamDto, PrincipalDetails principalDetails) {
+        WrongAnswer wrongAnswer = finishWordExamDto.toAnswer(finishWordExamDto, principalDetails);
         wrongAnswerRepository.save(wrongAnswer);
         return wrongAnswer;
     }
@@ -108,7 +101,7 @@ public class WordStorageTestService {
     @Transactional
     public List<WrongAnswerMapping> getExamHistory(PrincipalDetails principalDetails) {
 
-        return wrongAnswerRepository.customFindALlByUser(principalDetails.getUser()); //;
+        return wrongAnswerRepository.customFindALlByUser(principalDetails.getUser());
     }
 
 
