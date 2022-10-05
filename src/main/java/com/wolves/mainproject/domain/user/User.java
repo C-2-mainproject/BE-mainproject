@@ -31,7 +31,7 @@ public class User extends Timestamped implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true, length = 30, unique = true)
+    @Column(nullable = true, length = 30)
     private String nickname;
 
     @Column(nullable = false, name = "profile_image")
