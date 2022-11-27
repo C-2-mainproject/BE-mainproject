@@ -1,5 +1,6 @@
 package com.wolves.mainproject.domain.board;
 
+import com.wolves.mainproject.dto.request.board.BoardRequestDto;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @SuperBuilder
 @Getter
+@Table(name = "board")
 @Entity
 public class Board extends Timestamped {
     @Id
@@ -37,4 +39,19 @@ public class Board extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User user;
+
+    @Column(nullable = false)
+    private boolean isLike = false;
+
+
+    public void update(BoardRequestDto boardRequestDto){
+        this.title = boardRequestDto.getTitle();
+    }
+
+    public void bringLikeCount(long boardlike){
+        this.likeCount = boardlike;
+    }
+    public void getCommentCount(long commentCount){
+        this.commentCount= commentCount;
+    }
 }

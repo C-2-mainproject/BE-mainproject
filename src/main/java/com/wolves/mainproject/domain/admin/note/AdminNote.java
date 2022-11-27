@@ -2,12 +2,14 @@ package com.wolves.mainproject.domain.admin.note;
 
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
+import com.wolves.mainproject.dto.request.AdminNoteDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 
@@ -32,4 +34,10 @@ public class AdminNote extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User user;
+
+    public void update(AdminNoteDto adminNoteDto, User user) {
+        this.title = adminNoteDto.getTitle();
+        this.content = adminNoteDto.getContent();
+        this.user = user;
+    }
 }

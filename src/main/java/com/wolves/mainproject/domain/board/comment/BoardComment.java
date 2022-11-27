@@ -1,5 +1,6 @@
 package com.wolves.mainproject.domain.board.comment;
 
+import com.wolves.mainproject.dto.request.board.BoardCommentRequestDto;
 import com.wolves.mainproject.domain.board.Board;
 import com.wolves.mainproject.domain.common.Timestamped;
 import com.wolves.mainproject.domain.user.User;
@@ -35,4 +36,20 @@ public class BoardComment extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private Board board;
+
+    @JoinColumn(name = "refer_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne
+    private BoardComment refer;
+
+    private boolean status;
+
+    public void update(BoardCommentRequestDto boardCommentRequestDto) {
+        this.content = boardCommentRequestDto.getContent();
+    }
+
+    public void delete() {
+        this.status = false;
+    }
+
 }
